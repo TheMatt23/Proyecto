@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'login'
 ]
 
 MIDDLEWARE = [
@@ -73,12 +74,18 @@ WSGI_APPLICATION = 'programaPrincipal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+#Cambiar la base con sus credenciales
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tdw',
+        'USER': 'root',
+        'PASSWORD': 'mateo2324',
+        'HOST' : 'localhost',
+        'PORT': ''
     }
 }
+
 
 
 # Password validation
