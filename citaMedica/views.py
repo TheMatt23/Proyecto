@@ -1,50 +1,44 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseBadRequest
+from django.shortcuts import render, redirect, get_object_or_404
 from login.models import Paciente, Fisioterapeuta, CitaMedica
-from .forms import BuscarPacienteForm, CitaMedicaForm
+from .forms import BuscarPacienteForm
+import datetime
+from django import forms
 
-def generar_cita(request):
-    fisioterapeuta = Fisioterapeuta.objects.get(cedula='1800000003')  # Fisioterapeuta simulado
-    paciente = None  # Paciente inicial
-    citas = []  # Lista de citas asociadas al paciente
-    buscar_form = BuscarPacienteForm()  # Formulario para buscar
-    cita_form = CitaMedicaForm()  # Formulario para agregar citas
 
-    if request.method == 'POST':
-        if 'buscar_paciente' in request.POST:
-            buscar_form = BuscarPacienteForm(request.POST)
-            if buscar_form.is_valid():
-                cedula = buscar_form.cleaned_data['cedula']
-                paciente = Paciente.objects.filter(cedula=cedula).first()
+class CitaMedicaForm(forms.Form):
+    fisioterapeuta = forms.ModelChoiceField(queryset=Fisioterapeuta.objects.all(), label="Fisioterapeuta")
 
-                if paciente:
-                    # Obtener citas del paciente
-                    citas = CitaMedica.objects.filter(cedulaPaciente=paciente)
+# Simulación del fisioterapeuta conectado
+#fisioterapeuta = Fisioterapeuta.objects.get(cedula='1800000003')  # Fisioterapeuta simulado
 
-        elif 'agregar_cita' in request.POST:
-            if paciente is None:
-                # Si no hay paciente, muestra un error
-                return HttpResponseBadRequest("Debe buscar y seleccionar un paciente antes de agregar una cita.")
+def buscar_paciente(request):
+    context = {}
+    search_form = BuscarPacienteForm(request.GET or None)
+    cita_form = CitaMedicaForm(request.POST or None)
 
-            # Agregar una cita médica para el paciente seleccionado
-            cita_form = CitaMedicaForm(request.POST)
-            if cita_form.is_valid():
-                nueva_cita = cita_form.save(commit=False)
-                nueva_cita.cedulaFisioterapeuta = fisioterapeuta  # Fisioterapeuta simulado
-                nueva_cita.cedulaPaciente = paciente  # Paciente seleccionado
-                nueva_cita.save()  # Guarda la cita
-                return redirect(request.path_info)  # Recargar para limpiar el formulario
+    if search_form.is_valid():
+        cedula = search_form.cleaned_data['cedula']
+        try:
+            paciente = Paciente.objects.get(cedula=cedula)
+            context['paciente'] = paciente
 
-        elif 'limpiar' in request.POST:
-            # Limpiar los formularios
-            buscar_form = BuscarPacienteForm()  # Limpiar el formulario de búsqueda
-            cita_form = CitaMedicaForm()  # Limpiar el formulario de cita
-            citas = []  # Limpiar las citas asociadas
-            paciente = None  # Limpiar el paciente seleccionado
+            if request.method == 'POST' and cita_form.is_valid():
+                fisioterapeuta = cita_form.cleaned_data['fisioterapeuta']
+                nueva_cita = CitaMedica(
+                    cedulaPaciente=paciente,
+                    cedulaFisioterapeuta=fisioterapeuta,
+                    fecha=datetime.date.today()
+                )
+                nueva_cita.save()
+                context['message'] = "Cita creada exitosamente."
+                return redirect('buscar_paciente')  # Redirigir para evitar múltiples envíos
 
-    return render(request, 'citaMedica.html', {
-        'buscar_form': buscar_form,
-        'cita_form': cita_form,
-        'paciente': paciente,
-        'citas': citas,
-    })
+            citas_medicas = CitaMedica.objects.filter(cedulaPaciente=paciente)
+            context['citas_medicas'] = citas_medicas
+
+        except Paciente.DoesNotExist:
+            context['error_message'] = "Paciente no encontrado."
+
+    context['search_form'] = search_form
+    context['cita_form'] = cita_form
+    return render(request, 'citaMedica.html', context)
