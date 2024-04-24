@@ -1,0 +1,24 @@
+<!-- citaMedica.html -->
+<h2>Generar Cita Médica</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ buscar_form.as_p }}  <!-- Formulario para buscar paciente -->
+    <button type="submit" name="buscar_paciente">Buscar Paciente</button>
+</form>
+
+{% if paciente %}
+    <p>Paciente encontrado: {{ paciente }}</p>
+{% endif %}
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>  <!-- Muestra errores si existen -->
+{% endif %}
+
+{% if cita_form and paciente %}
+    <form method="post">
+        {% csrf_token %}
+        {{ cita_form.as_p }}  <!-- Formulario para crear la cita médica -->
+        <button type="submit" name="generar_cita">Generar Cita</button>
+    </form>
+{% endif %}
