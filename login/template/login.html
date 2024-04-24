@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: sans-serif;
+          font-size: 20px;
+          line-height: 1.5;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background-color: #f5f5f5;
+        }
+       
+        .contenedor-login {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: rgb(232, 236, 237);
+          width: 900px;
+          height: 300px;
+          overflow: auto;
+          border-radius: 15px;
+          padding: 20px;
+        }
+        .login {
+          background-color: #a2d4ff;
+          width: 60%;
+          height: 100%;
+          border-radius: 15px;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        .entrada {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 15px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+        }
+        .boton-login {
+          background-color: #007bff;
+          color: white;
+          padding: 10px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          text-align: center;
+          width: 80%;
+          margin-bottom: 10px;
+        }
+        .mensaje-modal-login {
+          width: 35%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+          animation: fade-in 2s ease-out;
+        }
+  
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      </style>
+</head>
+<body>
+    <div class="contenedor-login">
+        <div class="login">
+            <form action="" method="post">
+                {% csrf_token %}
+                <h3>Iniciar Sesión</h3>
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+                <p>Usuario</p>
+                <input class="entrada" type="text" name="cedula" placeholder="Cédula" required />
+                <p>Contraseña</p>
+                <input class="entrada" type="password" name="contrasena" placeholder="Contraseña" required />
+                <p class="boton-login"><input type="submit" value="Ingresar"></p>
+            </form>
+        </div>
+        <div class="mensaje-modal-login">
+            <h4>BIENVENIDO/A</h4>
+            <p>Para ingresar al sistema ingrese sus credenciales</p>
+        </div>
+    </div>
+</body>
+</html>
