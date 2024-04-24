@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'login'
+    'login', 'formularioPaciente', 'citaMedica'
 ]
 
 MIDDLEWARE = [
@@ -74,7 +74,7 @@ WSGI_APPLICATION = 'programaPrincipal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-#Cambiar la base con sus credenciales
+#Cambiar la base con sus credenciales para no tener inconvenientes
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -85,7 +85,6 @@ DATABASES = {
         'PORT': ''
     }
 }
-
 
 
 # Password validation

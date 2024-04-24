@@ -55,7 +55,7 @@ class CitaMedica(models.Model):
     citaID = models.AutoField(primary_key=True)  # Auto-incremento
     cedulaFisioterapeuta = models.ForeignKey(Fisioterapeuta, on_delete=models.CASCADE)
     cedulaPaciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateField(auto_now_add=True)  # Se establece la fecha automáticamente
 
 # Modelo para Terapia
 class Terapia(models.Model):

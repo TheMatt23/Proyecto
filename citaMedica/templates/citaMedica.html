@@ -1,0 +1,51 @@
+<!-- citaMedica.html -->
+<h2>Buscar Paciente</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ buscar_form.as_p }}  <!-- Formulario para buscar al paciente -->
+    <button type="submit" name="buscar_paciente">Buscar</button>
+    <button type="submit" name="limpiar">Limpiar</button>
+</form>
+
+{% if paciente %}
+    <!-- Mostrar información del paciente -->
+    <h3>Datos del Paciente</h3>
+    <p>Nombre: {{ paciente.nombre }}</p>
+    <p>Apellido: {{ paciente.apellido }}</p>
+
+    <!-- Botones para agregar cita o limpiar -->
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="agregar_cita">Agregar Cita</button>
+    </form>
+
+    {% if citas and citas|length > 0 %}
+        <!-- Mostrar las citas médicas asociadas al paciente -->
+        <h3>Citas Médicas Agendadas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Fisioterapeuta</th>
+                    <th>Paciente</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                    <tr>
+                        <td>{{ cita.citaID }}</td>
+                        <td>{{ cita.fecha }}</td>
+                        <td>{{ cita.cedulaFisioterapeuta.nombre }} {{ cita.cedulaFisioterapeuta.apellido }}</td>
+                        <td>{{ cita.cedulaPaciente.nombre }} {{ cita.cedulaPaciente.apellido }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay citas médicas agendadas para este paciente.</p>
+    {% endif %}
+{% else %}
+    <p>Introduzca una cédula para buscar un paciente.</p>
+{% endif %}
