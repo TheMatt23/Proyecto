@@ -42,3 +42,5 @@ def buscar_paciente(request):
     context['search_form'] = search_form
     context['cita_form'] = cita_form
     return render(request, 'citaMedica.html', context)
+
+    #Se modifico algunos aspectos
