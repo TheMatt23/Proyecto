@@ -14,3 +14,4 @@ class CitaMedicaForm(forms.ModelForm):
         widget=forms.HiddenInput(),  # Ocultar el campo del paciente
     )
 
+

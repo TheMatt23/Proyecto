@@ -1,50 +1,50 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest
 from login.models import Paciente, Fisioterapeuta, CitaMedica
 from .forms import BuscarPacienteForm, CitaMedicaForm
 
 def generar_cita(request):
     fisioterapeuta = Fisioterapeuta.objects.get(cedula='1800000003')  # Fisioterapeuta simulado
-    paciente = None
-    buscar_form = BuscarPacienteForm()
-    cita_form = CitaMedicaForm()
+    paciente = None  # Paciente inicial
+    citas = []  # Lista de citas asociadas al paciente
+    buscar_form = BuscarPacienteForm()  # Formulario para buscar
+    cita_form = CitaMedicaForm()  # Formulario para agregar citas
 
     if request.method == 'POST':
         if 'buscar_paciente' in request.POST:
-            # Buscar al paciente por cédula
             buscar_form = BuscarPacienteForm(request.POST)
             if buscar_form.is_valid():
                 cedula = buscar_form.cleaned_data['cedula']
                 paciente = Paciente.objects.filter(cedula=cedula).first()
 
                 if paciente:
-                    # Redefine el formulario para crear la cita con el paciente encontrado
-                    cita_form = CitaMedicaForm(initial={'cedulaPaciente': paciente})
-                else:
-                    # Paciente no encontrado, muestra un mensaje de error
-                    return render(request, 'citaMedica.html', {
-                        'buscar_form': buscar_form,
-                        'cita_form': cita_form,
-                        'error': "No se encontró un paciente con esta cédula. Inténtelo de nuevo.",
-                    })
+                    # Obtener citas del paciente
+                    citas = CitaMedica.objects.filter(cedulaPaciente=paciente)
 
-        elif 'generar_cita' in request.POST:
+        elif 'agregar_cita' in request.POST:
+            if paciente is None:
+                # Si no hay paciente, muestra un error
+                return HttpResponseBadRequest("Debe buscar y seleccionar un paciente antes de agregar una cita.")
+
+            # Agregar una cita médica para el paciente seleccionado
             cita_form = CitaMedicaForm(request.POST)
             if cita_form.is_valid():
-                # Antes de guardar, verifica que se haya asignado un paciente
-                paciente = cita_form.cleaned_data['cedulaPaciente']
-                if paciente:
-                    nueva_cita = cita_form.save(commit=False)
-                    nueva_cita.cedulaFisioterapeuta = fisioterapeuta  # Fisioterapeuta simulado
-                    nueva_cita.cedulaPaciente = paciente  # Paciente encontrado
-                    nueva_cita.save()  # Guarda la cita médica
-                    return redirect('exito')  # Redirige a la página de éxito
+                nueva_cita = cita_form.save(commit=False)
+                nueva_cita.cedulaFisioterapeuta = fisioterapeuta  # Fisioterapeuta simulado
+                nueva_cita.cedulaPaciente = paciente  # Paciente seleccionado
+                nueva_cita.save()  # Guarda la cita
+                return redirect(request.path_info)  # Recargar para limpiar el formulario
 
-    # Página inicial o cuando hay errores
+        elif 'limpiar' in request.POST:
+            # Limpiar los formularios
+            buscar_form = BuscarPacienteForm()  # Limpiar el formulario de búsqueda
+            cita_form = CitaMedicaForm()  # Limpiar el formulario de cita
+            citas = []  # Limpiar las citas asociadas
+            paciente = None  # Limpiar el paciente seleccionado
+
     return render(request, 'citaMedica.html', {
         'buscar_form': buscar_form,
         'cita_form': cita_form,
         'paciente': paciente,
+        'citas': citas,
     })
-
-def exito(request):
-    return render(request, 'exito.html') 
