@@ -2,20 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=h1H1, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Fisioterapia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clinic-logo {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .combo-box {
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #d4d4d4;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            margin-left: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <header>
-                Clínica Fisioterapia
-                <img src="" alt="imagenClinica">
-                <p>Cerrar Sesión</p>
+        <img src="" alt="imagenClinica" class="clinic-logo">
+        <h1>Clínica Fisioterapia</h1>
+        <p>Cerrar Sesión</p>
     </header>
-    <p>Filtrar por: </p>
-    <Selec value="" class="combo-box">
-        <option id="Fisioterapeutas">Fisioterapeutas</option>
-        <option id="Pacientes">Pacientes</option>
-    </Select>
 
+    <form method="get" action="">
+        <p>Filtrar por:</p>
+        <select name="filter" class="combo-box" onchange="this.form.submit()">
+            <option value="Fisioterapeutas" {% if filter == "Fisioterapeutas" %}selected{% endif %}>Fisioterapeutas</option>
+            <option value="Pacientes" {% if filter == "Pacientes" %}selected{% endif %}>Pacientes</option>
+        </select>
+        
+        <input type="text" name="search" placeholder="Buscar por cédula" value="{{ request.GET.search }}">
+        <input type="submit" value="Buscar">
+    </form>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Celular</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.cedula }}</td>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.apellido }}</td>
+                <td>{{ item.celular }}</td>
+                <td>{{ item.direccion }}</td>
+                <td>
+                    <a href="#">Editar</a>
+                    <a href="#">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No hay registros</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
