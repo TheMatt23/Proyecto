@@ -7,12 +7,12 @@
 <body>
     <h1>Buscar Paciente por Cédula</h1>
     
-    <form method="get">
+    <form method="get" action="">
         {{ search_form.as_p }}
         <button type="submit">Buscar</button>
-        <button type="reset" onclick="location.href='/cita/'">Limpiar</button>
+        <button type="button" onclick="location.href='/cita/{{ fisioterapeuta_cedula }}/'">Limpiar</button>
     </form>
-
+    
     {% if error_message %}
         <p>{{ error_message }}</p>
     {% elif paciente %}
