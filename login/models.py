@@ -79,11 +79,11 @@ class TipoEjercicio(models.Model):
     url = models.CharField(max_length=255)
 
 # Modelo para Ejercicio
-class Ejercicio(models.Model):
-    ejercicioID = models.AutoField(primary_key=True)
-    tipoEjercicioID = models.ForeignKey(TipoEjercicio, on_delete=models.CASCADE)
-    movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
-    porcentaje = models.FloatField()
+#class Ejercicio(models.Model):
+#    ejercicioID = models.AutoField(primary_key=True)
+#    tipoEjercicioID = models.ForeignKey(TipoEjercicio, on_delete=models.CASCADE)
+#    movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
+#    porcentaje = models.FloatField()
 
 # Modelo para MovimientosEjercicios
 #class MovimientosEjercicios(models.Model):

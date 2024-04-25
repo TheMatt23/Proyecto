@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from login.models import Terapia, Movimiento, TipoEjercicio, Ejercicio
+from login.models import Terapia, Movimiento, TipoEjercicio
 from .forms import TerapiaForm, MovimientoForm, TipoEjercicioForm
 
 # Terapias
@@ -8,15 +8,33 @@ class TerapiaView(View):
     def get(self, request):
         # Mostrar todas las terapias
         terapias = Terapia.objects.all()
+        tipo_ejercicios = TipoEjercicio.objects.all()
+
         terapia_form = TerapiaForm()  # Formulario para crear terapia
-        return render(request, 'terapia_view.html', {'terapias': terapias, 'terapia_form': terapia_form})
+        tipo_ejercicio_form = TipoEjercicioForm()
+    
+        return render(request, 'terapia_view.html', {
+            'terapias': terapias,
+            'terapia_form': terapia_form,
+            'tipo_ejercicios': tipo_ejercicios,
+            'tipo_ejercicio_form': tipo_ejercicio_form,
+        })
+
 
     def post(self, request):
-        # Crear nueva terapia
-        terapia_form = TerapiaForm(request.POST)
-        if terapia_form.is_valid():
-            terapia_form.save()  # Guarda la nueva terapia
-        return redirect('terapia_view')  # Redirige a la misma página
+        # Logica para determinar qué formulario se está enviando
+        if 'add_terapia' in request.POST:
+            terapia_form = TerapiaForm(request.POST)
+            if terapia_form.is_valid():
+                terapia_form.save()  # Guarda la nueva terapia
+
+        elif 'add_tipo_ejercicio' in request.POST:
+            tipo_ejercicio_form = TipoEjercicioForm(request.POST)
+            if tipo_ejercicio_form.is_valid():
+                tipo_ejercicio_form.save()  # Guarda el nuevo tipo de ejercicio
+        
+        # Redirigir a la misma vista después de procesar el formulario
+        return redirect('terapia_view')  
     
 class TerapiaDeleteView(View):
     def post(self, request, terapia_id):
@@ -43,25 +61,8 @@ class MovimientoDeleteView(View):
         movimiento.delete()  # Elimina el movimiento
         return redirect('terapia_view') 
 
-# Agregar Ejercicios
-class TipoEjercicioView(View):
-    def get(self, request):
-        tipo_ejercicios = TipoEjercicio.objects.all()
-        tipo_ejercicio_form = TipoEjercicioForm()
-        return render(request, 'terapia_view.html', {
-            'tipo_ejercicios': tipo_ejercicios,
-            'tipo_ejercicio_form': tipo_ejercicio_form
-        })
-
-class TipoEjercicioAddView(View):
-    def post(self, request):
-        tipo_ejercicio_form = TipoEjercicioForm(request.POST)
-        if tipo_ejercicio_form.is_valid():
-            tipo_ejercicio_form.save()  # Guarda el nuevo tipo de ejercicio
-        return redirect('tipo_ejercicio_view')  # Redirige al formulario flotante
-
 class TipoEjercicioDeleteView(View):
     def post(self, request, tipo_ejercicio_id):
         tipo_ejercicio = get_object_or_404(TipoEjercicio, pk=tipo_ejercicio_id)
         tipo_ejercicio.delete()  # Elimina el tipo de ejercicio
-        return redirect('tipo_ejercicio_view')
+        return redirect('terapia_view') 

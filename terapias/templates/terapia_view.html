@@ -10,18 +10,19 @@
     <form method="post">
         {% csrf_token %}
         {{ terapia_form.as_p }}
-        <button type="submit">Agregar Terapia</button>
+        <button type="submit" name="add_terapia">Agregar Terapia</button>
     </form>
 
     <!--Tipos Ejercicios-->
     <button onclick="openModal()">Agregar Tipo de Ejercicio</button>
     <div id="modalBackground" class="modal-background" onclick="closeModal()"></div>
-
     <div id="tipoEjercicioModal" class="modal">
-    <form method="post" action="{% url 'tipo_ejercicio_add' %}">
+
+    <h2>Agregar Tipo de Ejercicio</h2>
+    <form method="post">
         {% csrf_token %}
         {{ tipo_ejercicio_form.as_p }}
-        <button type="submit">Agregar Tipo de Ejercicio</button>
+        <button type="submit" name="add_tipo_ejercicio">Agregar Tipo de Ejercicio</button>
         <button type="button" onclick="closeModal()">Cerrar</button>
     </form>
 
@@ -39,6 +40,7 @@
                 </li>
             {% endfor %}
         </ul>
+    </div>
     </div>
         
 
