@@ -7,102 +7,144 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #eef5ff; /* Celeste */
+            color: #6c757d; /* Gris hueso */
             margin: 0;
             padding: 0;
         }
 
         header {
-            background-color: #3498db;
-            color: #ffffff;
+            background-color: #007bff; /* Azul */
+            color: white;
             padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
 
         .clinic-logo {
-            width: 50px;
+            width: 100px;
             height: auto;
-            margin-right: 10px;
         }
 
         form {
-            margin-top: 20px;
+            margin: 20px 0;
             padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .combo-box {
-            padding: 5px;
-            margin-bottom: 10px;
+            background-color: #ffffff; /* Blanco */
             border-radius: 5px;
         }
 
-        input[type="text"] {
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-            margin-right: 5px;
-        }
-
+        .combo-box,
+        input[type="text"],
         input[type="submit"] {
-            padding: 7px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background-color: #ffffff;
         }
 
         th, td {
-            padding: 10px;
+            padding: 8px 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #3498db;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #f7f7f7; /* Gris claro */
         }
 
         tr:hover {
-            background-color: #d4d4d4;
+            background-color: #f2f2f2; /* Gris más claro */
+        }
+
+        .editBtn,
+        .deleteBtn {
+            color: #007bff; /* Azul */
+            text-decoration: none;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .editBtn:hover,
+        .deleteBtn:hover {
+            text-decoration: underline;
         }
 
         a {
+            color: #6c757d; /* Gris hueso */
             text-decoration: none;
-            color: #3498db;
-            margin-left: 10px;
         }
 
         a:hover {
             text-decoration: underline;
         }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .cancelBtn {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .cancelBtn:hover {
+            background-color: #bbb;
+        }
+
     </style>
 </head>
 <body>
+    <!-- Encabezado -->
     <header>
         <img src="" alt="imagenClinica" class="clinic-logo">
         <h1>Clínica Fisioterapia</h1>
         <p>Cerrar Sesión</p>
     </header>
-
+    <!-- Formulario de filtrado -->
     <form method="get" action="">
         <p>Filtrar por:</p>
         <select name="filter" class="combo-box" onchange="this.form.submit()">
@@ -114,36 +156,100 @@
         <input type="submit" value="Buscar">
     </form>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Cédula</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Celular</th>
-                <th>Dirección</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>{{ item.cedula }}</td>
-                <td>{{ item.nombre }}</td>
-                <td>{{ item.apellido }}</td>
-                <td>{{ item.celular }}</td>
-                <td>{{ item.direccion }}</td>
-                <td>
-                    <a href="#">Editar</a>
-                    <a href="#">Eliminar</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No hay registros</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Tabla de registros -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Celular</th>
+            <th>Dirección</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.cedula }}</td>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.apellido }}</td>
+            <td>{{ item.celular }}</td>
+            <td>{{ item.direccion }}</td>
+            <td>
+                <a href="{% url 'edit_item' tipo=tipo cedula=item.cedula %}" class="editBtn" data-modal="editModal" data-tipo="{{ tipo }}">Editar</a>
+                <span class="deleteBtn" data-cedula="{{ item.cedula }}">Eliminar</span>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No hay registros</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal de confirmación para eliminar -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>¿Estás seguro que deseas eliminar este registro?</p>
+        <form id="deleteForm" method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="tipo" value="{{ tipo }}">
+            <input type="hidden" name="cedula" value="" id="deleteCedula">
+            <input type="submit" value="Eliminar">
+        </form>
+        <button class="cancelBtn">Cancelar</button>
+    </div>
+</div>
+
+<script>
+    // Obtener el modal
+    var modal = document.getElementById("deleteModal");
+
+    // Obtener el botón que abre el modal
+    var deleteBtns = document.querySelectorAll(".deleteBtn");
+
+    // Obtener el elemento <span> que cierra el modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // Obtener el botón de cancelar
+    var cancelBtn = document.getElementsByClassName("cancelBtn")[0];
+
+    // Obtener el formulario de eliminación
+    var deleteForm = document.getElementById("deleteForm");
+
+    // Obtener el campo de cédula del formulario
+    var deleteCedula = document.getElementById("deleteCedula");
+
+    // Cuando se haga clic en cualquier botón de eliminar, abrir el modal
+    deleteBtns.forEach(function(btn) {
+        btn.onclick = function() {
+            var cedula = btn.getAttribute("data-cedula");
+            deleteCedula.value = cedula;
+            deleteForm.action = "{% url 'delete_item' tipo=tipo cedula=0 %}".replace("0", cedula);
+            modal.style.display = "block";
+        }
+    });
+
+    // Cuando se haga clic en <span> (x), cerrar el modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Cuando se haga clic en el botón de cancelar, cerrar el modal
+    cancelBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Cuando el usuario haga clic en cualquier lugar fuera del modal, cerrarlo
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
 </body>
 </html>
