@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Terapia</title>
+</head>
+<body>
+    <h1>Agregar Terapia para Cita {{ cita.citaID }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Mostrar el formulario -->
+        <button type="submit">Agregar Terapia</button>
+    </form>
+
+    <h2>Lista de Terapias para esta Cita</h2>
+    <ul>
+        {% for terapia in cita.terapia_set.all %}  <!-- Mostrar todas las terapias asociadas -->
+            <li>{{ terapia.nombre }} (Fecha: {{ terapia.fecha }})</li>
+        {% endfor %}
+    </ul>
+
+    <button onclick="window.history.back()">Volver</button>  <!-- Botón para volver a la página anterior -->
+</body>
+</html>

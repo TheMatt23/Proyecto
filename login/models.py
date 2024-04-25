@@ -84,11 +84,10 @@ class Ejercicio(models.Model):
 
 # Modelo para MovimientosEjercicios
 class MovimientosEjercicios(models.Model):
+    movejerID = models.AutoField(primary_key=True)
     movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
     ejercicioID = models.ForeignKey(Ejercicio, on_delete=models.CASCADE)
     porcentaje = models.FloatField()
-    class Meta:
-        unique_together = ('movimientoID', 'ejercicioID')  # Para la clave primaria compuesta
 
 # Modelo para Resultados
 class Resultados(models.Model):

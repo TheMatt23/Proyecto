@@ -50,7 +50,7 @@ class CitaMedicaAdmin(admin.ModelAdmin):
 
 # Configuración personalizada para Terapia
 class TerapiaAdmin(admin.ModelAdmin):
-    list_display = ('terapiaID', 'citaID', 'nombre', 'fecha', 'cantidadTerapias')  # Campos a mostrar
+    list_display = ('terapiaID', 'citaID', 'nombre', 'fecha')  # Campos a mostrar
     search_fields = ('nombre',)  # Campo por el que se puede buscar
     list_filter = ('fecha',)  # Filtro por fecha
 
