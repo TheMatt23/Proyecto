@@ -2,7 +2,38 @@ from django.shortcuts import render, redirect,  get_object_or_404
 from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
+from django.views.decorators.http import require_POST
 
+@require_POST
+def add_user(request):
+    user_type = request.POST.get('user_type')
+    cedula = request.POST.get('cedula')
+    nombre = request.POST.get('nombre')
+    apellido = request.POST.get('apellido')
+    celular = request.POST.get('celular')
+    direccion = request.POST.get('direccion')
+    contrasena = request.POST.get('contrasena')
+
+    if user_type == 'Fisioterapeuta':
+        Fisioterapeuta.objects.create(
+            cedula=cedula,
+            nombre=nombre,
+            apellido=apellido,
+            celular=celular,
+            direccion=direccion,
+            contrasena=contrasena
+        )
+    elif user_type == 'Paciente':
+        Paciente.objects.create(
+            cedula=cedula,
+            nombre=nombre,
+            apellido=apellido,
+            celular=celular,
+            direccion=direccion,
+            contrasena=contrasena
+        )
+
+    return redirect('admin_home')  # Redirigir a la vista principal
 def login(request):
     if request.method == 'POST':
         cedula = request.POST.get('cedula')

@@ -135,6 +135,12 @@
             background-color: #bbb;
         }
 
+        /* Estilos adicionales para el formulario de añadir usuario */
+        #addUserForm {
+            display: none;
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -153,56 +159,77 @@
         </select>
         
         <input type="text" name="search" placeholder="Buscar por cédula" value="{{ request.GET.search }}">
+        
         <input type="submit" value="Buscar">
+
+
+    </form>
+    <button id="showAddUserForm">Agregar Usuario</button>
+
+    <!-- Botón para agregar usuario -->
+
+    <!-- Formulario para agregar usuario -->
+    <form id="addUserForm" method="post" action="{% url 'add_user' %}">
+        {% csrf_token %}
+        <input type="checkbox" name="user_type" value="Fisioterapeuta"> Fisioterapeuta
+        <input type="checkbox" name="user_type" value="Paciente"> Paciente
+        <br><br>
+        <input type="text" name="cedula" placeholder="Cédula">
+        <input type="text" name="nombre" placeholder="Nombre">
+        <input type="text" name="apellido" placeholder="Apellido">
+        <input type="text" name="celular" placeholder="Celular">
+        <input type="text" name="direccion" placeholder="Dirección">
+        <input type="password" name="contrasena" placeholder="Contraseña">
+        <input type="submit" value="Agregar">
     </form>
 
     <!-- Tabla de registros -->
-<table border="1">
-    <thead>
-        <tr>
-            <th>Cédula</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Celular</th>
-            <th>Dirección</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in items %}
-        <tr>
-            <td>{{ item.cedula }}</td>
-            <td>{{ item.nombre }}</td>
-            <td>{{ item.apellido }}</td>
-            <td>{{ item.celular }}</td>
-            <td>{{ item.direccion }}</td>
-            <td>
-                <a href="{% url 'edit_item' tipo=tipo cedula=item.cedula %}" class="editBtn" data-modal="editModal" data-tipo="{{ tipo }}">Editar</a>
-                <span class="deleteBtn" data-cedula="{{ item.cedula }}">Eliminar</span>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6">No hay registros</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Celular</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.cedula }}</td>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.apellido }}</td>
+                <td>{{ item.celular }}</td>
+                <td>{{ item.direccion }}</td>
+                <td>
+                    <a href="{% url 'edit_item' tipo=tipo cedula=item.cedula %}" class="editBtn" data-modal="editModal" data-tipo="{{ tipo }}">Editar</a>
+                    <span class="deleteBtn" data-cedula="{{ item.cedula }}">Eliminar</span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No hay registros</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<!-- Modal de confirmación para eliminar -->
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <p>¿Estás seguro que deseas eliminar este registro?</p>
-        <form id="deleteForm" method="post" action="">
-            {% csrf_token %}
-            <input type="hidden" name="tipo" value="{{ tipo }}">
-            <input type="hidden" name="cedula" value="" id="deleteCedula">
-            <input type="submit" value="Eliminar">
-        </form>
-        <button class="cancelBtn">Cancelar</button>
+    <!-- Modal de confirmación para eliminar -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>¿Estás seguro que deseas eliminar este registro?</p>
+            <form id="deleteForm" method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="tipo" value="{{ tipo }}">
+                <input type="hidden" name="cedula" value="" id="deleteCedula">
+                <input type="submit" value="Eliminar">
+            </form>
+            <button class="cancelBtn">Cancelar</button>
+        </div>
     </div>
-</div>
 
 <script>
     // Obtener el modal
@@ -249,6 +276,12 @@
             modal.style.display = "none";
         }
     }
+
+    // Mostrar formulario para agregar usuario
+    document.getElementById("showAddUserForm").addEventListener("click", function() {
+        var form = document.getElementById("addUserForm");
+        form.style.display = "block";
+    });
 </script>
 
 </body>
