@@ -82,14 +82,16 @@ class TipoEjercicio(models.Model):
 class Ejercicio(models.Model):
     ejercicioID = models.AutoField(primary_key=True)
     tipoEjercicioID = models.ForeignKey(TipoEjercicio, on_delete=models.CASCADE)
+    movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
+    porcentaje = models.FloatField()
 
 # Modelo para MovimientosEjercicios
-class MovimientosEjercicios(models.Model):
-    movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
-    ejercicioID = models.ForeignKey(Ejercicio, on_delete=models.CASCADE)
-    porcentaje = models.FloatField()
-    class Meta:
-        unique_together = ('movimientoID', 'ejercicioID') 
+#class MovimientosEjercicios(models.Model):
+ #   movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
+  #  ejercicioID = models.ForeignKey(Ejercicio, on_delete=models.CASCADE)
+   # porcentaje = models.FloatField()
+    #class Meta:
+     #   unique_together = ('movimientoID', 'ejercicioID') 
 
 
 #################################################
