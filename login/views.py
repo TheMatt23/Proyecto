@@ -49,7 +49,6 @@ def login(request):
     return render(request, 'sesion.html')
 
             
-
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
