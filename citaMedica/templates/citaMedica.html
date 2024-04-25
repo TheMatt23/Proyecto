@@ -1,51 +1,78 @@
-<!-- citaMedica.html -->
-<h2>Buscar Paciente</h2>
-
-<form method="post">
-    {% csrf_token %}
-    {{ buscar_form.as_p }}  <!-- Formulario para buscar al paciente -->
-    <button type="submit" name="buscar_paciente">Buscar</button>
-    <button type="submit" name="limpiar">Limpiar</button>
-</form>
-
-{% if paciente %}
-    <!-- Mostrar información del paciente -->
-    <h3>Datos del Paciente</h3>
-    <p>Nombre: {{ paciente.nombre }}</p>
-    <p>Apellido: {{ paciente.apellido }}</p>
-
-    <!-- Botones para agregar cita o limpiar -->
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" name="agregar_cita">Agregar Cita</button>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cita Médica</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Buscar Paciente por Cédula</h1>
+    
+    <form method="get">
+        {{ search_form.as_p }}
+        <button type="submit">Buscar</button>
     </form>
 
-    {% if citas and citas|length > 0 %}
-        <!-- Mostrar las citas médicas asociadas al paciente -->
-        <h3>Citas Médicas Agendadas</h3>
-        <table>
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% elif paciente %}
+        <h2>Información del Paciente</h2>
+        <p>Nombre: {{ paciente.nombre }} {{ paciente.apellido }}</p>
+        <p>Cédula: {{ paciente.cédula }}</p>
+        <p>Celular: {{ paciente.celular }}</p>
+
+        <h2>Agregar Cita Médica</h2>
+        <form id="cita-form" method="post">
+            {% csrf_token %}
+            <!-- No se necesita campo de fisioterapeuta -->
+            <button type="button" onclick="crearCita()">Agregar Cita Médica</button>
+        </form>
+
+        <h2>Citas Médicas</h2>
+        <table id="citas-table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Fecha</th>
                     <th>Fisioterapeuta</th>
-                    <th>Paciente</th>
                 </tr>
             </thead>
             <tbody>
-                {% for cita in citas %}
-                    <tr>
-                        <td>{{ cita.citaID }}</td>
-                        <td>{{ cita.fecha }}</td>
-                        <td>{{ cita.cedulaFisioterapeuta.nombre }} {{ cita.cedulaFisioterapeuta.apellido }}</td>
-                        <td>{{ cita.cedulaPaciente.nombre }} {{ cita.cedulaPaciente.apellido }}</td>
-                    </tr>
+                {% for cita in citas_medicas %}
+                <tr>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.cedulaFisioterapeuta }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
-    {% else %}
-        <p>No hay citas médicas agendadas para este paciente.</p>
     {% endif %}
-{% else %}
-    <p>Introduzca una cédula para buscar un paciente.</p>
-{% endif %}
+
+    <script>
+    function crearCita() {
+        var formData = $('#cita-form').serialize();  // Obtener datos del formulario
+
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: formData,
+            success: function(data) {
+                if (data.message) {
+                    alert(data.message);
+                }
+
+                // Agregar nueva fila a la tabla de citas médicas
+                $('#citas-table tbody').append(
+                    `<tr>
+                        <td>${data.fecha}</td>
+                        <td>Fisioterapeuta: 1800000003</td>  <!-- El fisioterapeuta conectado -->
+                    </tr>`
+                );
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al crear la cita:', error);
+            }
+        });
+    }
+    </script>
+</body>
+</html>
