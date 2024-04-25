@@ -26,6 +26,8 @@
         <button type="button" onclick="closeModal()">Cerrar</button>
     </form>
 
+    
+
         <h2>Lista de Tipos de Ejercicio</h2>
         <ul>
             {% for tipo in tipo_ejercicios %}
@@ -69,6 +71,13 @@
                     {% for movimiento in terapia.movimiento_set.all %}
                         <li>
                             {{ movimiento.nombre }}
+
+                            <form method="post" action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}">
+                                {% csrf_token %}
+                                <label for="tipo_ejercicio">Seleccione el tipo de ejercicio:</label>
+                                {{ ejercicio_combo_form.as_p }}
+                                <button type="submit">Agregar Ejercicio</button>
+                            </form>
 
                             <!-- Formulario para eliminar movimiento -->
                             <form method="post" action="{% url 'movimiento_delete' movimiento.movimientoID %}" style="display:inline;">

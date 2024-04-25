@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from login.models import Terapia, Movimiento, TipoEjercicio
-from .forms import TerapiaForm, MovimientoForm, TipoEjercicioForm
+from login.models import Terapia, Movimiento, TipoEjercicio, Ejercicios
+from .forms import TerapiaForm, MovimientoForm, TipoEjercicioForm, EjercicioComboForm
 
 # Terapias
 class TerapiaView(View):
@@ -12,12 +12,15 @@ class TerapiaView(View):
 
         terapia_form = TerapiaForm()  # Formulario para crear terapia
         tipo_ejercicio_form = TipoEjercicioForm()
+        ejercicio_combo_form = EjercicioComboForm() 
+
     
         return render(request, 'terapia_view.html', {
             'terapias': terapias,
             'terapia_form': terapia_form,
             'tipo_ejercicios': tipo_ejercicios,
             'tipo_ejercicio_form': tipo_ejercicio_form,
+            'ejercicio_combo_form': ejercicio_combo_form,  # Pasa el formulario con combo box
         })
 
 
@@ -51,6 +54,9 @@ class MovimientoAddView(View):
             # Asigna la terapia al movimiento antes de guardarlo
             movimiento = movimiento_form.save(commit=False)
             movimiento.terapiaID = terapia
+            ejercicio = movimiento_form.cleaned_data.get('ejercicio')
+            if ejercicio:
+                movimiento.movimientoID = ejercicio
             movimiento.save()  # Guarda el movimiento
         return redirect('terapia_view')  # Redirige a la misma página
 
@@ -66,3 +72,22 @@ class TipoEjercicioDeleteView(View):
         tipo_ejercicio = get_object_or_404(TipoEjercicio, pk=tipo_ejercicio_id)
         tipo_ejercicio.delete()  # Elimina el tipo de ejercicio
         return redirect('terapia_view') 
+    
+#Ejercicios####
+
+    
+class AgregarEjercicioAMovimientoView(View):
+    def post(self, request, movimiento_id):
+        movimiento = get_object_or_404(Movimiento, pk=movimiento_id)
+
+        ejercicio_combo_form = EjercicioComboForm(request.POST)
+        
+        if ejercicio_combo_form.is_valid():
+            tipo_ejercicio = ejercicio_combo_form.cleaned_data['tipo_ejercicio']
+            Ejercicios.objects.create(
+                tipoEjercicioID=tipo_ejercicio,
+                movimientoID=movimiento,
+                porcentaje=0  
+            )
+        
+        return redirect('terapia_view')

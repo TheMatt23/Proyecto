@@ -9,7 +9,7 @@ from .models import (
     Terapia,
     Movimiento,
     TipoEjercicio,
-    #Ejercicio,
+    Ejercicios,
     #MovimientosEjercicios,
     Resultados,
     AsignarTerapias  # No olvidar esta importación
@@ -63,9 +63,9 @@ class TipoEjercicioAdmin(admin.ModelAdmin):
     search_fields = ('nombre',)  # Campo por el que se puede buscar
 
 # Configuración personalizada para Ejercicio
-#class EjercicioAdmin(admin.ModelAdmin):
- #   list_display = ('ejercicioID', 'tipoEjercicioID')  # Campos a mostrar
-  #  search_fields = ('tipoEjercicioID__nombre',)  # Campo por el que se puede buscar
+class EjercicioAdmin(admin.ModelAdmin):
+    list_display = ('ejercicioID', 'tipoEjercicioID')  # Campos a mostrar
+    search_fields = ('tipoEjercicioID__nombre',)  # Campo por el que se puede buscar
 
 # Configuración para MovimientosEjercicios
 #class MovimientosEjerciciosAdmin(admin.ModelAdmin):
@@ -93,7 +93,6 @@ admin.site.register(CitaMedica, CitaMedicaAdmin)
 admin.site.register(Terapia, TerapiaAdmin)
 admin.site.register(Movimiento, MovimientoAdmin)
 admin.site.register(TipoEjercicio, TipoEjercicioAdmin)
-#admin.site.register(Ejercicio, EjercicioAdmin)
-#admin.site.register(MovimientosEjercicios, MovimientosEjerciciosAdmin)
+admin.site.register(Ejercicios, EjercicioAdmin)
 admin.site.register(Resultados, ResultadosAdmin)
 admin.site.register(AsignarTerapias, AsignarTerapiasAdmin)  # No olvides registrar este modelo

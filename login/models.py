@@ -57,8 +57,6 @@ class CitaMedica(models.Model):
     cedulaPaciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     fecha = models.DateField(auto_now_add=True)  # Se establece la fecha automáticamente
 
-
-
 ########################################
 # Modelo para Terapia
 class Terapia(models.Model):
@@ -77,6 +75,8 @@ class TipoEjercicio(models.Model):
     tipoEjercicioID = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
+    def __str__(self):
+        return self.nombre
 
 # Modelo para Ejercicio
 class Ejercicios(models.Model):
