@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Terapias y Movimientos</title>
+</head>
+<body>
+    <h1>Terapias</h1>
+
+    <h2>Agregar nueva Terapia</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ terapia_form.as_p }}
+        <button type="submit">Agregar Terapia</button>
+    </form>
+
+    <h2>Lista de Terapias</h2>
+    <ul>
+        {% for terapia in terapias %}
+            <li>
+                {{ terapia.nombre }}
+
+                <!-- Formulario para eliminar terapia -->
+                <form method="post" action="{% url 'terapia_delete' terapia.terapiaID %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">Eliminar Terapia</button>
+                </form>
+                
+                <!-- Formulario para agregar movimientos -->
+                <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="text" name="nombre" placeholder="Nuevo Movimiento" required>
+                    <button type="submit">Agregar Movimiento</button>
+                </form>
+
+                <!-- Lista de movimientos -->
+                <ul>
+                    {% for movimiento in terapia.movimiento_set.all %}
+                        <li>
+                            {{ movimiento.nombre }}
+
+                            <!-- Formulario para eliminar movimiento -->
+                            <form method="post" action="{% url 'movimiento_delete' movimiento.movimientoID %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este movimiento?')">Eliminar Movimiento</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

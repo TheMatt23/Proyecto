@@ -1,34 +1,23 @@
 <!-- gestionar_terapias.html -->
-<h2>Gestión de Terapias para Cita: {{ cita.citaID }}</h2>
+<h1>Detalles de la Cita</h1>
+<p>Cita ID: {{ cita.citaID }}</p>
+<p>Fecha de la Cita: {{ cita.fecha }}</p>
 
-<!-- Formulario para agregar nueva terapia -->
+<!-- Formulario para agregar nuevas terapias -->
+<h2>Agregar Nueva Terapia</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Agregar Terapia</button>
+    {{ agregar_terapia_form.as_p }}  <!-- Muestra el formulario -->
+    <button type="submit" name="'crear_terapia'">Agregar Terapia</button>
 </form>
 
-<!-- Tabla para listar terapias -->
-<table>
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for terapia in terapias %}
-        <tr>
-            <td>{{ terapia.nombre }}</td>
-            <td>{{ terapia.fecha }}</td>
-            <td>
-                <form method="post" action="{% url 'eliminar_terapia' terapia.terapiaID %}">
-                    {% csrf_token %}
-                    <button type="submit">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h2>Terapias Asociadas</h2>
+<ul>
+    {% for terapia in terapias %}
+    <li>{{ terapia.nombre }} - {{ terapia.descripcion }}</li>
+    {% empty %}
+    <li>No hay terapias asociadas</li>
+    {% endfor %}
+</ul>
+
+

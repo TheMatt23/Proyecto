@@ -57,13 +57,14 @@ class CitaMedica(models.Model):
     cedulaPaciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     fecha = models.DateField(auto_now_add=True)  # Se establece la fecha automáticamente
 
+
+
+########################################
 # Modelo para Terapia
 class Terapia(models.Model):
     terapiaID = models.AutoField(primary_key=True)
-    citaID = models.ForeignKey(CitaMedica, on_delete=models.CASCADE)
-    fecha = models.DateField()
     nombre = models.CharField(max_length=255)  # Corregido el error de tipo
-    cantidadTerapias = models.IntegerField()
+    #cantidadMovimientos = models.IntegerField()
 
 # Modelo para Movimiento
 class Movimiento(models.Model):
@@ -84,10 +85,20 @@ class Ejercicio(models.Model):
 
 # Modelo para MovimientosEjercicios
 class MovimientosEjercicios(models.Model):
-    movejerID = models.AutoField(primary_key=True)
     movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
     ejercicioID = models.ForeignKey(Ejercicio, on_delete=models.CASCADE)
     porcentaje = models.FloatField()
+    class Meta:
+        unique_together = ('movimientoID', 'ejercicioID') 
+
+
+#################################################
+# Modelo para Asignar las terapias
+class AsignarTerapias(models.Model):
+    AgigID = models.AutoField(primary_key=True)
+    citaID = models.ForeignKey(CitaMedica, on_delete=models.CASCADE)
+    terapiaID = models.ForeignKey(Terapia, on_delete=models.CASCADE)
+    fecha = models.DateField(auto_now_add=True)
 
 # Modelo para Resultados
 class Resultados(models.Model):

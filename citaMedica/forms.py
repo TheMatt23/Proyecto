@@ -13,14 +13,13 @@ class EliminarCitaForm(forms.Form):
     cita_id = forms.IntegerField(widget=forms.HiddenInput()) 
 
 
-class AgregarTerapiaForm(forms.Form):
+class TerapiaForm(forms.Form):
     cita_id = forms.IntegerField(widget=forms.HiddenInput())
 
-
 class AgregarTerapiaForm(forms.ModelForm):
-    class Meta:
-        model = Terapia
-        fields = ['nombre', 'cantidadTerapias']  # Puedes agregar más campos si los necesitas
+   class Meta:
+      model = Terapia
+      fields = ['nombre'] 
 
 class EliminarTerapiaForm(forms.Form):
     terapia_id = forms.IntegerField()
