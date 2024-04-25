@@ -10,30 +10,38 @@
             color: #333; /* gris oscuro */
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
         }
 
         h1 {
             color: #007BFF; /* celeste */
             margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
         }
 
         form {
             background-color: #fff; /* blanco */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
         }
 
         button {
             background-color: #007BFF; /* celeste */
             color: #fff; /* blanco */
-            padding: 8px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
             transition: background-color 0.3s;
+            width: 100%;
         }
 
         button:hover {
@@ -44,21 +52,23 @@
         form input[type="number"],
         form select {
             width: 100%;
-            padding: 8px 12px;
-            margin-bottom: 10px;
+            padding: 8px;
+            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 0.9em;
+            box-sizing: border-box;
         }
 
         form textarea {
             width: 100%;
-            padding: 8px 12px;
-            margin-bottom: 10px;
+            padding: 8px;
+            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 0.9em;
             resize: vertical;
+            box-sizing: border-box;
         }
 
         .formset {
@@ -72,9 +82,10 @@
     </style>
 </head>
 <body>
-    <h1>Registrar Paciente</h1>
     
     <form method="post">
+        <h1>Registrar Paciente</h1>
+
         {% csrf_token %}
         {{ paciente_form.as_p }}
         
