@@ -9,4 +9,8 @@ class CitaMedicaForm(forms.ModelForm):
         model = CitaMedica
         fields = ['cedulaPaciente'] 
 
+class EliminarCitaForm(forms.Form):
+    cita_id = forms.IntegerField(widget=forms.HiddenInput()) 
 
+class AgregarTerapiaForm(forms.Form):
+    cita_id = forms.IntegerField(widget=forms.HiddenInput())

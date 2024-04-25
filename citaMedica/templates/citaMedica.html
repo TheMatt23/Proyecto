@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Cita Médica</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
     <h1>Buscar Paciente por Cédula</h1>
@@ -11,6 +10,7 @@
     <form method="get">
         {{ search_form.as_p }}
         <button type="submit">Buscar</button>
+        <button type="reset" onclick="location.href='/cita/'">Limpiar</button>
     </form>
 
     {% if error_message %}
@@ -23,8 +23,7 @@
 
         <form id="cita-form" method="post">
             {% csrf_token %}
-            <!-- No se necesita campo de fisioterapeuta -->
-            <button type="button" onclick="crearCita()">Agregar Cita Médica</button>
+            <button type="submit" name="crear_cita">Agregar Cita Médica</button>
         </form>
 
         <h2>Citas Médicas</h2>
@@ -35,6 +34,7 @@
                     <th>Fecha</th>
                     <th>Fisioterapeuta</th>
                     <th>Paciente</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,35 +44,25 @@
                     <td>{{ cita.fecha }}</td>
                     <td>{{ cita.cedulaFisioterapeuta }}</td>
                     <td>{{ cita.cedulaPaciente }}</td>
+                    <td>
+                        <!-- Botón para agregar terapia -->
+                        <form method="post">  <!-- Agregar terapia -->
+                            {% csrf_token %}
+                            <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
+                            <button type="submit" name="agregar_terapia">Agregar Terapia</button>
+                        </form>
+    
+                        <!-- Botón para eliminar cita -->
+                        <form method="post">  <!-- Eliminar cita -->
+                            {% csrf_token %}
+                            <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
+                            <button type="submit" name="eliminar_cita">Eliminar Cita</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% endif %}
-
-    <script>
-    function crearCita() {
-    var formData = $('#cita-form').serialize();  // Obtener datos del formulario
-
-    $.ajax({
-        url: '',  // URL de destino
-        type: 'POST',
-        data: formData,
-        success: function(data) {
-            if (data.message) {
-                alert(data.message);  // Mensaje de éxito
-            }
-
-            // Recargar la página para reflejar las nuevas citas
-            location.reload();  // Recarga la página
-        },
-        error: function(xhr, status, error) {
-            console.error('Error al crear la cita:', error);
-            alert('Hubo un error al crear la cita. Inténtalo de nuevo.');  // Mensaje de error
-        }
-    });
-}
-
-    </script>
 </body>
 </html>
