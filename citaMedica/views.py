@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from login.models import Paciente, Fisioterapeuta, CitaMedica
-from .forms import BuscarPacienteForm, CitaMedicaForm, AgregarTerapiaForm, EliminarCitaForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
+from login.models import Paciente, Fisioterapeuta, CitaMedica, Terapia, Movimiento, CitaMedica
+from .forms import BuscarPacienteForm, CitaMedicaForm, AgregarTerapiaForm, EliminarCitaForm, TerapiaForm
+
 import datetime
 
 def buscar_paciente(request, fisioterapeuta_cedula=None):
