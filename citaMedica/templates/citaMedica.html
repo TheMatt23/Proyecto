@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cita Médica</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9; /* gris claro */
+            color: #333; /* gris oscuro */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #007BFF; /* celeste */
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff; /* blanco */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #007BFF; /* celeste */
+            color: #fff; /* blanco */
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* celeste más oscuro */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 6px;
+            background-color: #fff; /* blanco */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: none;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        th {
+            background-color: #007BFF; /* celeste */
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* gris hueso */
+        }
+
+        tr:hover {
+            background-color: #e6e6e6; /* gris más claro */
+        }
+
+        form input[type="text"],
+        form input[type="number"] {
+            width: 100%;
+            padding: 6px 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        form button[type="submit"],
+        form button[type="button"] {
+            padding: 6px 10px;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Buscar Paciente por Cédula</h1>
+    
+    <form method="get" action="">
+        {{ search_form.as_p }}
+        <button type="submit">Buscar</button>
+        <button type="button" onclick="location.href='/cita/{{ fisioterapeuta_cedula }}/'">Limpiar</button>
+    </form>
+    
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% elif paciente %}
+        <h2>Información del Paciente</h2>
+        <p>Nombre: {{ paciente.nombre }} {{ paciente.apellido }}</p>
+        <p>Cédula: {{ paciente.cedula }}</p>
+        <p>Celular: {{ paciente.celular }}</p>
+
+        <form id="cita-form" method="post">
+            {% csrf_token %}
+            <button type="submit" name="crear_cita">Agregar Cita Médica</button>
+        </form>
+
+        <h2>Citas Médicas</h2>
+        <table id="citas-table">
+            <thead>
+                <tr>
+                    <th>Nº</th>
+                    <th>Fecha</th>
+                    <th>Fisioterapeuta</th>
+                    <th>Paciente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas_medicas %}
+                <tr>
+                    <td>{{ forloop.counter }}</td> <!-- Muestra el índice, empezando por 1 -->
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.cedulaFisioterapeuta }}</td>
+                    <td>{{ cita.cedulaPaciente }}</td>
+                    <td>
+                        <!-- Botón para agregar terapia -->
+                        <form method="post">  <!-- Agregar terapia -->
+                            {% csrf_token %}
+                            <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
+                            <button type="submit" name="agregar_terapia">Agregar</button>
+                        </form>
+    
+                        <!-- Botón para eliminar cita -->
+                        <form method="post">  <!-- Eliminar cita -->
+                            {% csrf_token %}
+                            <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
+                            <button type="submit" name="eliminar_cita">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</body>
+</html>
