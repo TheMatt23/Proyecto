@@ -24,3 +24,5 @@ urlpatterns = [
     path('cita/', include('citaMedica.urls')),
     path('terapias/', include('terapias.urls'))
 ]
+
+#homla
