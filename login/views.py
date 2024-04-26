@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect,  get_object_or_404
 from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
+from citaMedica.views import buscar_paciente as citaMedica 
+
 from django.views.decorators.http import require_POST
 
 @require_POST
@@ -44,11 +46,19 @@ def login(request):
         try:
             admin = Admin.objects.get(cedula=cedula, contrasena=contrasena)
             return redirect('admin_home')  # Redirige a la página de administrador si las credenciales son correctas
+        
         except Admin.DoesNotExist:
-            # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
-            return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
+            try:
+                fisioterapeuta = Fisioterapeuta.objects.get(cedula=cedula, contrasena=contrasena)
+                request.session['fisioterapeuta_cedula'] = cedula  # Guarda la cédula del fisioterapeuta en la sesión
+                return redirect('buscar_paciente', fisioterapeuta_cedula=cedula)  # Redirige a la página de búsqueda de paciente si las credenciales son correctas
+            
+            except Fisioterapeuta.DoesNotExist:
+                # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
+                return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
 
     return render(request, 'sesion.html')
+
 
             
 class PacienteForm(forms.ModelForm):
