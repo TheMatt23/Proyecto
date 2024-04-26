@@ -148,7 +148,8 @@
     <header>
         <img src="" alt="imagenClinica" class="clinic-logo">
         <h1>Clínica Fisioterapia</h1>
-        <p>Cerrar Sesión</p>
+        <a href="{% url 'home' %}" style="color: white; text-decoration: none">Cerrar Sesión</a>
+
     </header>
     <!-- Formulario de filtrado -->
     <form method="get" action="">
@@ -276,7 +277,7 @@
             modal.style.display = "none";
         }
     }
-
+//hola
     // Mostrar formulario para agregar usuario
     document.getElementById("showAddUserForm").addEventListener("click", function() {
         var form = document.getElementById("addUserForm");
