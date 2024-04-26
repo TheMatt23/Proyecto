@@ -134,3 +134,12 @@ def delete_item(request, tipo, cedula):
     obj.delete()
 
     return redirect('admin_home')  # Redirigir a la vista principal
+
+def pantalla_inicio(request):
+    return render(request, 'pantallaInicio.html')
+
+
+
+
+def sesion(request):
+    return render(request, 'sesion.html')
