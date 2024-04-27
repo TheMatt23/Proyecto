@@ -1,51 +1,119 @@
-<!-- citaMedica.html -->
-<h2>Buscar Paciente</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cita Médica</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9; /* gris claro */
+            color: #333; /* gris oscuro */
+            margin: 0;
+            padding: 20px;
+        }
 
-<form method="post">
-    {% csrf_token %}
-    {{ buscar_form.as_p }}  <!-- Formulario para buscar al paciente -->
-    <button type="submit" name="buscar_paciente">Buscar</button>
-    <button type="submit" name="limpiar">Limpiar</button>
-</form>
+        h1, h2 {
+            color: #007BFF; /* celeste */
+            margin-bottom: 20px;
+        }
 
-{% if paciente %}
-    <!-- Mostrar información del paciente -->
-    <h3>Datos del Paciente</h3>
-    <p>Nombre: {{ paciente.nombre }}</p>
-    <p>Apellido: {{ paciente.apellido }}</p>
+        form {
+            background-color: #fff; /* blanco */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
 
-    <!-- Botones para agregar cita o limpiar -->
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" name="agregar_cita">Agregar Cita</button>
+        button {
+            background-color: #007BFF; /* celeste */
+            color: #fff; /* blanco */
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* celeste más oscuro */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 6px;
+            background-color: #fff; /* blanco */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: none;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        th {
+            background-color: #007BFF; /* celeste */
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* gris hueso */
+        }
+
+        tr:hover {
+            background-color: #e6e6e6; /* gris más claro */
+        }
+
+        form input[type="text"],
+        form input[type="number"] {
+            width: 100%;
+            padding: 6px 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        form button[type="submit"],
+        form button[type="button"] {
+            padding: 6px 10px;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+    <h1>Fisioterapeuta</h1>
+    <button type="button" onclick="location.href='/cita/'">Pacientes</button>
+    <button type="button" onclick="location.href='/cita/'">Cerrar Sesion</button>
+    </nav>
+
+    <form method="get" action="">
+        {{ search_form.as_p }}
+        <button type="submit">Buscar</button>
+        <button type="button" onclick="location.href='/cita/'">Limpiar</button>
     </form>
+    
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% elif paciente %}
+        <h2>Información del Paciente</h2>
+        <p>Nombre: {{ paciente.nombre }} {{ paciente.apellido }}</p>
+        <p>Cédula: {{ paciente.cedula }}</p>
+        <p>Celular: {{ paciente.celular }}</p>
 
-    {% if citas and citas|length > 0 %}
-        <!-- Mostrar las citas médicas asociadas al paciente -->
-        <h3>Citas Médicas Agendadas</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Fecha</th>
-                    <th>Fisioterapeuta</th>
-                    <th>Paciente</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cita in citas %}
-                    <tr>
-                        <td>{{ cita.citaID }}</td>
-                        <td>{{ cita.fecha }}</td>
-                        <td>{{ cita.cedulaFisioterapeuta.nombre }} {{ cita.cedulaFisioterapeuta.apellido }}</td>
-                        <td>{{ cita.cedulaPaciente.nombre }} {{ cita.cedulaPaciente.apellido }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No hay citas médicas agendadas para este paciente.</p>
+        <form id="cita-form" method="post">
+            {% csrf_token %}
+            <button type="submit" name="crear_cita">Agregar Cita Médica</button>
+        </form>
     {% endif %}
-{% else %}
-    <p>Introduzca una cédula para buscar un paciente.</p>
-{% endif %}
+</body>
+</html>

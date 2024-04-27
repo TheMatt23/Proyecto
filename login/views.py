@@ -1,11 +1,14 @@
+# Create your views here.
 from django.shortcuts import render, redirect,  get_object_or_404
 from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
+
+
 from django.views.decorators.http import require_POST
 
 @require_POST
-def add_user(request):
+def add_usuario(request):
     user_type = request.POST.get('user_type')
     cedula = request.POST.get('cedula')
     nombre = request.POST.get('nombre')
@@ -33,7 +36,8 @@ def add_user(request):
             contrasena=contrasena
         )
 
-    return redirect('admin_home')  # Redirigir a la vista principal
+    return redirect('admin_home') 
+# Redirigir a la vista principal
 def login(request):
     if request.method == 'POST':
         cedula = request.POST.get('cedula')
@@ -42,11 +46,19 @@ def login(request):
         try:
             admin = Admin.objects.get(cedula=cedula, contrasena=contrasena)
             return redirect('admin_home')  # Redirige a la página de administrador si las credenciales son correctas
+        
         except Admin.DoesNotExist:
-            # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
-            return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
+            try:
+                fisioterapeuta = Fisioterapeuta.objects.get(cedula=cedula, contrasena=contrasena)
+                request.session['fisioterapeuta_cedula'] = cedula  # Guarda la cédula del fisioterapeuta en la sesión
+                return redirect('buscar_paciente', fisioterapeuta_cedula=cedula)  # Redirige a la página de búsqueda de paciente si las credenciales son correctas
+            
+            except Fisioterapeuta.DoesNotExist:
+                # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
+                return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
 
     return render(request, 'sesion.html')
+
 
             
 class PacienteForm(forms.ModelForm):
@@ -122,3 +134,9 @@ def delete_item(request, tipo, cedula):
     obj.delete()
 
     return redirect('admin_home')  # Redirigir a la vista principal
+
+def pantalla_inicio(request):
+    return render(request, 'pantallaInicio.html')
+
+def sesion(request):
+    return render(request, 'sesion.html')

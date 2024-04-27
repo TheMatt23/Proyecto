@@ -50,20 +50,18 @@ class HistorialPaciente(models.Model):
     cedulaPaciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     lesionID = models.ForeignKey(TipoLesion, on_delete=models.CASCADE)
 
-# Modelo para CitaMedica
-class CitaMedica(models.Model):
-    citaID = models.AutoField(primary_key=True)  # Auto-incremento
-    cedulaFisioterapeuta = models.ForeignKey(Fisioterapeuta, on_delete=models.CASCADE)
-    cedulaPaciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    fecha = models.DateField(auto_now_add=True)  # Se establece la fecha automáticamente
 
-# Modelo para Terapia
+########################################
 class Terapia(models.Model):
     terapiaID = models.AutoField(primary_key=True)
-    citaID = models.ForeignKey(CitaMedica, on_delete=models.CASCADE)
-    fecha = models.DateField()
-    nombre = models.CharField(max_length=255)  # Corregido el error de tipo
-    cantidadTerapias = models.IntegerField()
+    cedulaFisioterapeuta = models.ForeignKey(Fisioterapeuta, on_delete=models.CASCADE)
+    cedulaPaciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=255)
+    fecha = models.DateField(null=True)
+
+    def __str__(self):
+        return self.nombre
+  # Corregido el error de tipo
 
 # Modelo para Movimiento
 class Movimiento(models.Model):
@@ -76,19 +74,22 @@ class TipoEjercicio(models.Model):
     tipoEjercicioID = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
+    def __str__(self):
+        return self.nombre
 
 # Modelo para Ejercicio
-class Ejercicio(models.Model):
+class Ejercicios(models.Model):
     ejercicioID = models.AutoField(primary_key=True)
     tipoEjercicioID = models.ForeignKey(TipoEjercicio, on_delete=models.CASCADE)
-
-# Modelo para MovimientosEjercicios
-class MovimientosEjercicios(models.Model):
     movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
-    ejercicioID = models.ForeignKey(Ejercicio, on_delete=models.CASCADE)
     porcentaje = models.FloatField()
-    class Meta:
-        unique_together = ('movimientoID', 'ejercicioID')  # Para la clave primaria compuesta
+
+#################################################
+# Modelo para Asignar las terapias
+class AsignarTerapias(models.Model):
+    AgigID = models.AutoField(primary_key=True)
+    terapiaID = models.ForeignKey(Terapia, on_delete=models.CASCADE)
+    fecha = models.DateField(auto_now_add=True)
 
 # Modelo para Resultados
 class Resultados(models.Model):
