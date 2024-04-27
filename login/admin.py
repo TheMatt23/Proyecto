@@ -1,90 +1,48 @@
 from django.contrib import admin
-from .models import (
-    Admin,
-    Paciente,
-    Fisioterapeuta,
-    TipoLesion,
-    HistorialPaciente,
-    CitaMedica,
-    Terapia,
-    Movimiento,
-    TipoEjercicio,
-    Ejercicios,
-    Resultados,
-    AsignarTerapias
-)
+from .models import Admin, Paciente, Fisioterapeuta, TipoLesion, HistorialPaciente, Terapia, Movimiento, TipoEjercicio, Ejercicios, AsignarTerapias, Resultados
 
-# Configuración personalizada para Admin
+# Register your models here.
+
+@admin.register(Admin)
 class AdminAdmin(admin.ModelAdmin):
-    list_display = ('cedula', 'nombre', 'apellido', 'celular')  # Campos a mostrar en el listado
-    search_fields = ('cedula', 'nombre', 'apellido')  # Campos por los que se puede buscar
+    list_display = ['cedula', 'nombre', 'apellido', 'celular', 'direccion']
 
-# Configuración personalizada para Paciente
+@admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
-    list_display = ('cedula', 'nombre', 'apellido', 'celular')  # Campos a mostrar
-    search_fields = ('cedula', 'nombre', 'apellido')  # Campos por los que se puede buscar
+    list_display = ['cedula', 'nombre', 'apellido', 'celular', 'direccion']
 
-# Configuración personalizada para Fisioterapeuta
+@admin.register(Fisioterapeuta)
 class FisioterapeutaAdmin(admin.ModelAdmin):
-    list_display = ('cedula', 'nombre', 'apellido', 'celular')  # Campos a mostrar
-    search_fields = ('cedula', 'nombre', 'apellido')  # Campos por los que se puede buscar
+    list_display = ['cedula', 'nombre', 'apellido', 'celular', 'direccion']
 
-# Configuración personalizada para TipoLesion
+@admin.register(TipoLesion)
 class TipoLesionAdmin(admin.ModelAdmin):
-    list_display = ('lesionID', 'nombreLesion')  # Campos a mostrar
-    search_fields = ('nombreLesion',)  # Campos por los que se puede buscar
+    list_display = ['lesionID', 'nombreLesion']
 
-# Configuración personalizada para HistorialPaciente
+@admin.register(HistorialPaciente)
 class HistorialPacienteAdmin(admin.ModelAdmin):
-    list_display = ('historialID', 'cedulaPaciente', 'lesionID')  # Campos a mostrar
-    search_fields = ('cedulaPaciente_cedula', 'lesionID_nombreLesion')  # Campos para búsqueda por relaciones
+    list_display = ['historialID', 'cedulaPaciente', 'lesionID']
 
-# Configuración personalizada para CitaMedica
-class CitaMedicaAdmin(admin.ModelAdmin):
-    list_display = ('citaID', 'cedulaFisioterapeuta', 'cedulaPaciente', 'fecha')  # Campos a mostrar
-    search_fields = ('cedulaFisioterapeuta_cedula', 'cedulaPaciente_cedula')  # Campos por los que se puede buscar
-    list_filter = ('fecha',)  # Filtro por fecha
-
-# Configuración personalizada para Terapia
+@admin.register(Terapia)
 class TerapiaAdmin(admin.ModelAdmin):
-    list_display = ('terapiaID', 'nombre', 'fecha')  # Campos a mostrar
-    search_fields = ('nombre',)  # Campo por el que se puede buscar
+    list_display = ['terapiaID', 'cedulaFisioterapeuta', 'cedulaPaciente', 'nombre', 'fecha']
 
-# Configuración personalizada para Movimiento
+@admin.register(Movimiento)
 class MovimientoAdmin(admin.ModelAdmin):
-    list_display = ('movimientoID', 'terapiaID', 'nombre')  # Campos a mostrar
-    search_fields = ('nombre', 'terapiaID__nombre')  # Campo por el que se puede buscar
-    list_filter = ('terapiaID',)  # Filtro por terapia
+    list_display = ['movimientoID', 'terapiaID', 'nombre']
 
-# Configuración personalizada para TipoEjercicio
+@admin.register(TipoEjercicio)
 class TipoEjercicioAdmin(admin.ModelAdmin):
-    list_display = ('tipoEjercicioID', 'nombre', 'url')  # Campos a mostrar
-    search_fields = ('nombre',)  # Campo por el que se puede buscar
+    list_display = ['tipoEjercicioID', 'nombre', 'url']
 
-# Configuración personalizada para Ejercicio
-class EjercicioAdmin(admin.ModelAdmin):
-    list_display = ('ejercicioID', 'tipoEjercicioID', 'movimientoID', 'porcentaje')  # Campos a mostrar
-    search_fields = ('tipoEjercicioID__nombre',)  # Campo por el que se puede buscar
+@admin.register(Ejercicios)
+class EjerciciosAdmin(admin.ModelAdmin):
+    list_display = ['ejercicioID', 'tipoEjercicioID', 'movimientoID', 'porcentaje']
 
-# Configuración para Resultados
-class ResultadosAdmin(admin.ModelAdmin):
-    list_display = ('resultadoID', 'movimientoID', 'cantidadPos', 'cantidadNeg', 'porcentaje')  # Campos a mostrar
-    list_filter = ('porcentaje',)  # Filtro por porcentaje
-
-# Configuración para AsignarTerapias
+@admin.register(AsignarTerapias)
 class AsignarTerapiasAdmin(admin.ModelAdmin):
-    list_display = ('AgigID', 'citaID', 'terapiaID', 'fecha')  # Campos a mostrar
-    search_fields = ('citaID_citaID', 'terapiaID_nombre')  # Campos por los que se puede buscar
+    list_display = ['AgigID', 'terapiaID', 'fecha']
 
-admin.site.register(Admin, AdminAdmin)
-admin.site.register(Paciente, PacienteAdmin)
-admin.site.register(Fisioterapeuta, FisioterapeutaAdmin)
-admin.site.register(TipoLesion, TipoLesionAdmin)
-admin.site.register(HistorialPaciente, HistorialPacienteAdmin)
-admin.site.register(CitaMedica, CitaMedicaAdmin)
-admin.site.register(Terapia, TerapiaAdmin)
-admin.site.register(Movimiento, MovimientoAdmin)
-admin.site.register(TipoEjercicio, TipoEjercicioAdmin)
-admin.site.register(Ejercicios, EjercicioAdmin)
-admin.site.register(Resultados, ResultadosAdmin)
-admin.site.register(AsignarTerapias, AsignarTerapiasAdmin) 
+@admin.register(Resultados)
+class ResultadosAdmin(admin.ModelAdmin):
+    list_display = ['resultadoID', 'movimientoID', 'cantidadPos', 'cantidadNeg', 'porcentaje']

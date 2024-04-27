@@ -93,7 +93,6 @@
     <nav>
     <h1>Fisioterapeuta</h1>
     <button type="button" onclick="location.href='/cita/'">Pacientes</button>
-    <button type="button" onclick="location.href='/terapias/'">Terapias</button>
     <button type="button" onclick="location.href='/cita/'">Cerrar Sesion</button>
     </nav>
 
@@ -115,44 +114,6 @@
             {% csrf_token %}
             <button type="submit" name="crear_cita">Agregar Cita Médica</button>
         </form>
-
-        <h2>Citas Médicas</h2>
-        <table id="citas-table">
-            <thead>
-                <tr>
-                    <th>Nº</th>
-                    <th>Fecha</th>
-                    <th>Fisioterapeuta</th>
-                    <th>Paciente</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cita in citas_medicas %}
-                <tr>
-                    <td>{{ forloop.counter }}</td> <!-- Muestra el índice, empezando por 1 -->
-                    <td>{{ cita.fecha }}</td>
-                    <td>{{ cita.cedulaFisioterapeuta }}</td>
-                    <td>{{ cita.cedulaPaciente }}</td>
-                    <td>
-                        <!-- Botón para agregar terapia -->
-                        <form method="post">  <!-- Agregar terapia -->
-                            {% csrf_token %}
-                            <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
-                            <button type="submit" name="agregar_terapia">Agregar</button>
-                        </form>
-    
-                        <!-- Botón para eliminar cita -->
-                        <form method="post">  <!-- Eliminar cita -->
-                            {% csrf_token %}
-                            <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
-                            <button type="submit" name="eliminar_cita">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     {% endif %}
 </body>
 </html>

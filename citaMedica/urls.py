@@ -3,10 +3,11 @@ from . import views
 from .views import TerapiaView, MovimientoAddView, MovimientoDeleteView, TerapiaDeleteView, TipoEjercicioDeleteView, AgregarEjercicioAMovimientoView, EliminarEjercicioView
 
 urlpatterns = [
-    path('', views.buscar_paciente, name='generar_cita'),  # Ruta para generar citas
+    path('', views.buscar_paciente, name='generar_cita'),
+    path('reguistro/', views.registrar_paciente),
     path('login/', include('login.urls')),
-    path('<str:fisioterapeuta_cedula>/', views.buscar_paciente, name='buscar_paciente'), # Ruta para la vista de citaMedica    
-    path('terapias/', TerapiaView.as_view(), name='terapia_view'),
+    path('<str:fisioterapeuta_cedula>/', views.buscar_paciente, name='buscar_paciente'), 
+    path('terapia/', TerapiaView.as_view(), name='terapia_view'),
     path('terapias/deleteTerapia/<int:terapia_id>/', TerapiaDeleteView.as_view(), name='terapia_delete'),
     path('terapias/addMovimiento/<int:terapia_id>/', MovimientoAddView.as_view(), name='movimiento_add'),
     path('terapias/movimiento/delete/<int:movimiento_id>/', MovimientoDeleteView.as_view(), name='movimiento_delete'),
