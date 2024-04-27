@@ -61,8 +61,8 @@ class CitaMedica(models.Model):
 # Modelo para Terapia
 class Terapia(models.Model):
     terapiaID = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)  # Corregido el error de tipo
-    #cantidadMovimientos = models.IntegerField()
+    nombre = models.CharField(max_length=255)
+    fecha = models.DateField(null=True)   # Corregido el error de tipo
 
 # Modelo para Movimiento
 class Movimiento(models.Model):
