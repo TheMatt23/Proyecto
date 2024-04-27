@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,  get_object_or_404
 from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
-from citaMedica.views import buscar_paciente as citaMedica 
+
 
 from django.views.decorators.http import require_POST
 

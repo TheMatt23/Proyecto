@@ -1,15 +1,12 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponse
-from django.urls import reverse
-from login.models import Paciente, Fisioterapeuta, CitaMedica, Terapia, Movimiento, CitaMedica
-from .forms import BuscarPacienteForm, CitaMedicaForm, AgregarTerapiaForm, EliminarCitaForm, TerapiaForm
-
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from login.models import Paciente, Fisioterapeuta
+from .forms import BuscarPacienteForm, AgregarTerapiaForm, EliminarCitaForm
 import datetime
 
 def buscar_paciente(request, fisioterapeuta_cedula=None):
     context = {}
     search_form = BuscarPacienteForm(request.GET or None)
-    cita_form = CitaMedicaForm(request.POST or None)
     eliminar_cita_form = EliminarCitaForm(request.POST or None)
     agregar_terapia_form = AgregarTerapiaForm(request.POST or None)
 
@@ -19,27 +16,14 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
             fisioterapeuta_conectado = Fisioterapeuta.objects.get(cedula=fisioterapeuta_cedula)
 
             if request.method == 'POST':
-                if 'crear_cita' in request.POST and search_form.is_valid():
-                    cedula = search_form.cleaned_data['cedula']
-                    try:
-                        paciente = Paciente.objects.get(cedula=cedula)
-                        context['paciente'] = paciente
-
-                        nueva_cita = CitaMedica(
-                            cedulaPaciente=paciente,
-                            cedulaFisioterapeuta=fisioterapeuta_conectado,
-                            fecha=datetime.date.today()  # Fecha actual
-                        )
-                        nueva_cita.save()
-
-                    except Paciente.DoesNotExist:
-                        context['error_message'] = "Paciente no encontrado."
-
                 if 'eliminar_cita' in request.POST and eliminar_cita_form.is_valid():
                     cita_id = eliminar_cita_form.cleaned_data['cita_id']
-                    CitaMedica.objects.filter(pk=cita_id).delete()
+                    # Eliminar la cita (o la terapia asociada)
+                    # Aquí deberías escribir el código para eliminar la cita o la terapia asociada según tu lógica
+                    return JsonResponse({'message': 'Cita eliminada exitosamente.'})  # Respuesta para AJAX
 
                 if 'agregar_terapia' in request.POST and agregar_terapia_form.is_valid():
+                    # Aquí deberías escribir el código para agregar la terapia según tu lógica
                     return JsonResponse({'message': 'Terapia agregada exitosamente.'})  # Respuesta para AJAX
 
             if search_form.is_valid():
@@ -48,8 +32,9 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
                     paciente = Paciente.objects.get(cedula=cedula)
                     context['paciente'] = paciente
 
-                    citas_medicas = CitaMedica.objects.filter(cedulaPaciente=paciente)
-                    context['citas_medicas'] = citas_medicas
+                    # Aquí deberías obtener las terapias asociadas al paciente según tu lógica
+                    # terapias = Terapia.objects.filter(...)  # Escribe tu filtro aquí
+                    # context['terapias'] = terapias
 
                 except Paciente.DoesNotExist:
                     context['error_message'] = "Paciente no encontrado."
@@ -65,7 +50,6 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
             context['error_message'] = "Error: Fisioterapeuta no especificado."
 
     context['search_form'] = search_form
-    context['cita_form'] = cita_form
     context['eliminar_cita_form'] = eliminar_cita_form
     context['agregar_terapia_form'] = agregar_terapia_form
     context['fisioterapeuta_cedula'] = fisioterapeuta_cedula
