@@ -90,8 +90,13 @@
     </style>
 </head>
 <body>
-    <h1>Buscar Paciente por Cédula</h1>
-    
+    <nav>
+    <h1>Fisioterapeuta</h1>
+    <button type="button" onclick="location.href='/cita/'">Pacientes</button>
+    <button type="button" onclick="location.href='/terapias/'">Terapias</button>
+    <button type="button" onclick="location.href='/cita/'">Cerrar Sesion</button>
+    </nav>
+
     <form method="get" action="">
         {{ search_form.as_p }}
         <button type="submit">Buscar</button>
