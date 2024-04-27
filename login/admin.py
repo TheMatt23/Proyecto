@@ -63,7 +63,7 @@ class TipoEjercicioAdmin(admin.ModelAdmin):
 
 # Configuración personalizada para Ejercicio
 class EjercicioAdmin(admin.ModelAdmin):
-    list_display = ('ejercicioID', 'tipoEjercicioID')  # Campos a mostrar
+    list_display = ('ejercicioID', 'tipoEjercicioID', 'movimientoID', 'porcentaje')  # Campos a mostrar
     search_fields = ('tipoEjercicioID__nombre',)  # Campo por el que se puede buscar
 
 # Configuración para Resultados
@@ -76,7 +76,6 @@ class AsignarTerapiasAdmin(admin.ModelAdmin):
     list_display = ('AgigID', 'citaID', 'terapiaID', 'fecha')  # Campos a mostrar
     search_fields = ('citaID_citaID', 'terapiaID_nombre')  # Campos por los que se puede buscar
 
-# Registrar los modelos y sus configuraciones personalizadas
 admin.site.register(Admin, AdminAdmin)
 admin.site.register(Paciente, PacienteAdmin)
 admin.site.register(Fisioterapeuta, FisioterapeutaAdmin)
