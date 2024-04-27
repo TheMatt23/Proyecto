@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'login', 'formularioPaciente', 'citaMedica', 'terapias'
+    'login', 'citaMedica'
 ]
 
 MIDDLEWARE = [
@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tdw',
         'USER': 'root',
-        'PASSWORD': 'Javier123!',
+        'PASSWORD': 'mateo2324',
         'HOST' : 'localhost',
         'PORT': ''
     }
