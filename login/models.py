@@ -62,7 +62,7 @@ class CitaMedica(models.Model):
 class Terapia(models.Model):
     terapiaID = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)  # Corregido el error de tipo
-    #cantidadMovimientos = models.IntegerField()
+    fecha = models.DateField(null=True, blank=True)  # Campo de fecha, puede ser nulo
 
 # Modelo para Movimiento
 class Movimiento(models.Model):
@@ -85,7 +85,6 @@ class Ejercicios(models.Model):
     movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
     porcentaje = models.FloatField()
 
-#################################################
 # Modelo para Asignar las terapias
 class AsignarTerapias(models.Model):
     AgigID = models.AutoField(primary_key=True)

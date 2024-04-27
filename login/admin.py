@@ -47,7 +47,7 @@ class CitaMedicaAdmin(admin.ModelAdmin):
 
 # Configuración personalizada para Terapia
 class TerapiaAdmin(admin.ModelAdmin):
-    list_display = ('terapiaID', 'nombre')  # Campos a mostrar
+    list_display = ('terapiaID', 'nombre', 'fecha')  # Campos a mostrar
     search_fields = ('nombre',)  # Campo por el que se puede buscar
 
 # Configuración personalizada para Movimiento
@@ -88,4 +88,4 @@ admin.site.register(Movimiento, MovimientoAdmin)
 admin.site.register(TipoEjercicio, TipoEjercicioAdmin)
 admin.site.register(Ejercicios, EjercicioAdmin)
 admin.site.register(Resultados, ResultadosAdmin)
-admin.site.register(AsignarTerapias, AsignarTerapiasAdmin)  # No olvides registrar este modelo
+admin.site.register(AsignarTerapias, AsignarTerapiasAdmin) 
