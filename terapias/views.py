@@ -13,7 +13,6 @@ class TerapiaView(View):
         terapia_form = TerapiaForm()  # Formulario para crear terapia
         tipo_ejercicio_form = TipoEjercicioForm()
         ejercicio_combo_form = EjercicioComboForm() 
-
     
         return render(request, 'terapia_view.html', {
             'terapias': terapias,
@@ -36,7 +35,6 @@ class TerapiaView(View):
             if tipo_ejercicio_form.is_valid():
                 tipo_ejercicio_form.save()  # Guarda el nuevo tipo de ejercicio
         
-        # Redirigir a la misma vista después de procesar el formulario
         return redirect('terapia_view')  
     
 class TerapiaDeleteView(View):
@@ -91,3 +89,10 @@ class AgregarEjercicioAMovimientoView(View):
             )
         
         return redirect('terapia_view')
+    
+
+class EliminarEjercicioView(View):
+    def post(self, request, ejercicio_id):
+        ejercicio = get_object_or_404(Ejercicios, pk=ejercicio_id)
+        ejercicio.delete()
+        return redirect('terapia_view') 

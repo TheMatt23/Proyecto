@@ -5,7 +5,7 @@ from login.models import Terapia, Movimiento, TipoEjercicio
 class TerapiaForm(forms.ModelForm):
     class Meta:
         model = Terapia
-        fields = ['nombre']
+        fields = ['nombre', 'fecha']
 
 # Formulario para agregar movimientos
 class MovimientoForm(forms.ModelForm):
@@ -21,7 +21,7 @@ class TipoEjercicioForm(forms.ModelForm):
 
 class EjercicioComboForm(forms.Form):
     tipo_ejercicio = forms.ModelChoiceField(
-        queryset=TipoEjercicio.objects.all(),  # Consulta para obtener los tipos de ejercicio
-        empty_label="Seleccione un tipo",  # Mensaje predeterminado cuando no hay nada seleccionado
-        required=True,  # Indica si este campo es obligatorio
+        queryset=TipoEjercicio.objects.all(), 
+        empty_label="Seleccione un tipo",
+        required=True, 
     )

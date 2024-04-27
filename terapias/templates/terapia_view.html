@@ -7,7 +7,7 @@
     <h1>Terapias</h1>
 
     <h2>Agregar nueva Terapia</h2>
-    <form method="post">
+    <form method="post" style="display:inline;">
         {% csrf_token %}
         {{ terapia_form.as_p }}
         <button type="submit" name="add_terapia">Agregar Terapia</button>
@@ -18,9 +18,10 @@
     <div id="modalBackground" class="modal-background" onclick="closeModal()"></div>
     <div id="tipoEjercicioModal" class="modal">
 
-    <h2>Agregar Tipo de Ejercicio</h2>
-    <form method="post">
+    <h2>Agregar Tipo de Ejercicio </h2>
+    <form method="post" style="display:inline;">
         {% csrf_token %}
+        
         {{ tipo_ejercicio_form.as_p }}
         <button type="submit" name="add_tipo_ejercicio">Agregar Tipo de Ejercicio</button>
         <button type="button" onclick="closeModal()">Cerrar</button>
@@ -34,7 +35,6 @@
                 <li>
                     {{ tipo.nombre }}
 
-                    <!-- Formulario para eliminar tipo de ejercicio -->
                     <form method="post" action="{% url 'tipo_ejercicio_delete' tipo.tipoEjercicioID %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este tipo de ejercicio?')">Eliminar</button>
@@ -50,15 +50,10 @@
     <h2>Lista de Terapias</h2>
     <ul>
         {% for terapia in terapias %}
+        <br>
             <li>
                 {{ terapia.nombre }}
-
-                <!-- Formulario para eliminar terapia -->
-                <form method="post" action="{% url 'terapia_delete' terapia.terapiaID %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">Eliminar Terapia</button>
-                </form>
-                
+                {{ terapia.fecha }}
                 <!-- Formulario para agregar movimientos -->
                 <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}" style="display:inline;">
                     {% csrf_token %}
@@ -66,15 +61,20 @@
                     <button type="submit">Agregar Movimiento</button>
                 </form>
 
+                <form method="post" action="{% url 'terapia_delete' terapia.terapiaID %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">Eliminar Terapia</button>
+                </form>
+                
                 <!-- Lista de movimientos -->
+                <h4>Movimientos</h4>
                 <ul>
                     {% for movimiento in terapia.movimiento_set.all %}
                         <li>
                             {{ movimiento.nombre }}
 
-                            <form method="post" action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}">
+                            <form method="post" action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}" style="display:inline;">
                                 {% csrf_token %}
-                                <label for="tipo_ejercicio">Seleccione el tipo de ejercicio:</label>
                                 {{ ejercicio_combo_form.as_p }}
                                 <button type="submit">Agregar Ejercicio</button>
                             </form>
@@ -84,7 +84,25 @@
                                 {% csrf_token %}
                                 <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este movimiento?')">Eliminar Movimiento</button>
                             </form>
+
+
+                            <h4>Ejercicios Asociados</h4>
+                            <ul>
+                                {% for ejercicio in movimiento.ejercicios_set.all %}  <!-- Bucle para recorrer ejercicios de cada movimiento -->
+                                    <li>
+                                        {{ ejercicio.tipoEjercicioID.nombre }} - {{ ejercicio.porcentaje }}%
+
+                                        <form method="post" action="{% url 'eliminar_ejercicio' ejercicio.ejercicioID %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este ejercicio?')">Eliminar Ejercicio</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
                         </li>
+
+                        
                     {% endfor %}
                 </ul>
             </li>
