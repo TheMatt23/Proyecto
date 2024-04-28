@@ -3,100 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro de Pacientes</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9; /* gris claro */
-            color: #333; /* gris oscuro */
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-        }
-
-        h1 {
-            color: #007BFF; /* celeste */
-            margin-bottom: 20px;
-            text-align: center;
-            width: 100%;
-        }
-
-        form {
-            background-color: #fff; /* blanco */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 400px;
-        }
-
-        button {
-            background-color: #007BFF; /* celeste */
-            color: #fff; /* blanco */
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #0056b3; /* celeste más oscuro */
-        }
-
-        form input[type="text"],
-        form input[type="number"],
-        form select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.9em;
-            box-sizing: border-box;
-        }
-
-        form textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.9em;
-            resize: vertical;
-            box-sizing: border-box;
-        }
-
-        .formset {
-            margin-top: 20px;
-        }
-
-        .formset > div {
-            margin-bottom: 15px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
 </head>
 <body>
-    
-    <form method="post">
-        <h1>Registrar Paciente</h1>
-
-        {% csrf_token %}
-        {{ paciente_form.as_p }}
-        
-        <div class="formset">
-            {{ formset.management_form }}
-            {% for form in formset %}
-                {{ form.as_p }}  <!-- Formularios para las lesiones -->
-            {% endfor %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" onclick="location.href='/cita/'" style="cursor: pointer;">Fisioterapeuta</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pacientes' %}">Pacientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Cerrar Sesión</a>
+                </li>
+            </ul>
         </div>
+    </nav>
+    
+    
+    <div class="container mt-4">
+        <h2>Administración de Pacientes</h2>
         
-        <button type="submit">Registrar</button>
-    </form>
+        <!-- Botón para mostrar el formulario -->
+        <button class="btn btn-success" onclick="toggleForm()">Agregar Paciente</button>
+    
+        <!-- Formulario para registrar pacientes, inicialmente oculto -->
+        <div id="patientForm" style="display: none;">
+            <form method="post">
+                <h3>Registrar Paciente</h3>
+                {% csrf_token %}
+                {{ paciente_form.as_p }}
+                
+                <div class="formset">
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                        {{ form.as_p }}  <!-- Formularios para las lesiones -->
+                    {% endfor %}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
+    </div>
+    
 </body>
 </html>
+
+<script>
+    function toggleForm() {
+        var form = document.getElementById("patientForm");
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+    </script>

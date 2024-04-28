@@ -8,6 +8,11 @@
 
     <h2>Agregar nueva Terapia</h2>
     <form method="post" style="display:inline;">
+        <h3>Paciente</h3>
+        <p>Cedula: {{ paciente.cedula }}</p>
+        <p>Nombre: {{ paciente.nombre }}</p>
+        <p>Apellido: {{ paciente.apellido }}</p>
+        <h3>Terapia</h3>
         {% csrf_token %}
         {{ terapia_form.as_p }}
         <button type="submit" name="add_terapia">Agregar Terapia</button>
