@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from login.models import Paciente, Terapia, Resultados
 from django.db.models import Sum
@@ -8,28 +8,23 @@ from plotly.offline import plot
 from django.shortcuts import redirect
 from login.views import pantalla_inicio as login_pantalla_inicio
 from django.contrib.auth import logout
+from django.http import Http404
 
-@login_required
-def paciente_detalle(request):
-    cedula_paciente = request.session.get('cedula_paciente')  # Obtiene la cédula del paciente de la sesión
 
-    if cedula_paciente:
-        paciente = Paciente.objects.get(cedula=cedula_paciente)
-        terapias = Terapia.objects.filter(cedulaPaciente=paciente)
-        terapias_info = []
+def paciente_detalle(request, paciente_cedula=None):
+    if not paciente_cedula:  # Verificar que paciente_cedula no sea None
+        return redirect('login')  # Redirigir al login si falta la cédula
 
-        for terapia in terapias:
-            # Procesa cada terapia como desees
-            terapias_info.append({
-                'id': terapia.terapiaID,
-                'nombre_terapia': terapia.nombre,
-                'fecha_terapia': terapia.fecha.strftime('%d/%m/%Y') if terapia.fecha else ''
-            })
+    try:
+        paciente = get_object_or_404(Paciente, cedula=paciente_cedula)
+    except Http404:
+        return render(request, 'error.html', {"message": "Paciente no encontrado."})
 
-        return render(request, 'pacientesPantalla.html', {'paciente': paciente, 'terapias_info': terapias_info})
-    else:
-        # Redirige al usuario a otra vista si no se encuentra la cédula del paciente en la sesión
-        return redirect('login')  # Reemplaza 'otra_vista' con el nombre de la vista a la que quieres redirigir al usuario
+    terapias = Terapia.objects.filter(cedulaPaciente=paciente)
+
+    terapias_info = [{"id": terapia.terapiaID, "nombre_terapia": terapia.nombre, "fecha": terapia.fecha.strftime('%Y-%m-%d'), "terapeuta": terapia.cedulaFisioterapeuta} for terapia in terapias]
+
+    return render(request, 'pacientesPantalla.html', {"paciente": paciente, "terapias_info": terapias_info})
 
 def cerrar_sesion(request):
     logout(request)
@@ -37,13 +32,13 @@ def cerrar_sesion(request):
 
 def ver_reporte(request, terapia_id):
     # Consulta para obtener los valores positivos y negativos de la tabla Resultados
-    resultados = Resultados.objects.filter(movimientoID__terapiaID=terapia_id).aggregate(
+    resultados = Resultados.objects.filter(terapiaID=terapia_id).aggregate(
         total_positivo=Sum('cantidadPos'),
         total_negativo=Sum('cantidadNeg')
     )
 
     # Datos del gráfico
-    labels = ['Cantidad Positiva', 'Cantidad Negativa']
+    labels = ['Correctos', 'Incorrectos']
     valores = [resultados['total_positivo'] or 0, resultados['total_negativo'] or 0]
 
     # Crear el gráfico
@@ -57,9 +52,9 @@ def ver_reporte(request, terapia_id):
     ]
 
     layout = go.Layout(
-        title='Reporte Gráfico',
-        xaxis=dict(title='Categorías'),
-        yaxis=dict(title='Cantidad')
+        title='Reporte Terapia',
+        xaxis=dict(title='Movimientos'),
+        yaxis=dict(title='Ejercicios')
     )
 
     fig = go.Figure(data=data, layout=layout)
@@ -67,10 +62,9 @@ def ver_reporte(request, terapia_id):
 
     return render(request, 'reporteGrafico.html', {'plot_div': plot_div})
 
-def reporte_general(request):
-     # Obtener la cédula del paciente de la sesión
-    cedula_paciente = request.session.get('cedula_paciente')
 
+def reporte_general(request, cedula_paciente):
+     # Obtener la cédula del paciente de la sesión
     if cedula_paciente:
         # Buscar al paciente por su cédula
         paciente = Paciente.objects.get(cedula=cedula_paciente)
@@ -84,7 +78,7 @@ def reporte_general(request):
 
         for terapia in terapias:
             # Consultar los resultados para cada terapia y sumar los valores positivos y negativos
-            resultados = Resultados.objects.filter(movimientoID__terapiaID=terapia.terapiaID).aggregate(
+            resultados = Resultados.objects.filter(terapiaID=terapia.terapiaID).aggregate(
                 total_positivo=Sum('cantidadPos'),
                 total_negativo=Sum('cantidadNeg')
             )
@@ -123,7 +117,6 @@ def reporte_general(request):
 
         return render(request, 'reporteGeneral.html', {'plot_div': plot_div, 'paciente': paciente})
     else:
-        # Manejar el caso si no se encuentra la cédula del paciente en la sesión
         return redirect('login')
     
     

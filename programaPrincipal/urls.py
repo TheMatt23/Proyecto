@@ -22,7 +22,6 @@ urlpatterns = [
     path('', include('login.urls')),
     path('cita/', include('citaMedica.urls')),
     path('pacientes/', include('pacientes.urls')),
-
 ]
 
 #homla

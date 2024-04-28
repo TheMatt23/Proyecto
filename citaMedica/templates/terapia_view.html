@@ -64,6 +64,8 @@
                     {% csrf_token %}
                     <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">Eliminar Terapia</button>
                 </form>
+                <a href="{% url 'ver_reporte' terapia.terapiaID %}">Ver Reporte</a> 
+
                 
                 <!-- Lista de movimientos -->
                 <h4>Movimientos</h4>
@@ -87,30 +89,36 @@
 
                             <h4>Ejercicios Asociados</h4>
                             <ul>
-                                {% for ejercicio in movimiento.ejercicios_set.all %}  <!-- Bucle para recorrer ejercicios de cada movimiento -->
+                                {% for ejercicio in movimiento.ejercicios_set.all %}
                                     <li>
                                         {{ ejercicio.tipoEjercicioID.nombre }} - {{ ejercicio.porcentaje }}%
+
+                                        <form method="post" action="{% url 'actualizar_porcentaje' %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="ejercicio_id" value="{{ ejercicio.ejercicioID }}">
+                                            <label for="porcentaje">Porcentaje:</label>
+                                            <input type="number" name="porcentaje" step="0.01" min="0" max="100" required>
+                                            <button type="submit">Actualizar</button>
+                                         </form>
 
                                         <form method="post" action="{% url 'eliminar_ejercicio' ejercicio.ejercicioID %}" style="display:inline;">
                                             {% csrf_token %}
                                             <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este ejercicio?')">Eliminar Ejercicio</button>
                                         </form>
+                                        
+                                        <div id="form-container" >
+                                            
 
-                                        <button onclick="toggleForm()">Evaluar Ejercicio</button>
 
-                                        <div id="form-container" class="hidden">
-                                            <form method="post" action="{% url 'actualizar_porcentaje' %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="ejercicio_id" value="{{ ejercicio.ejercicioID }}">
-                                                <label for="porcentaje">Porcentaje:</label>
-                                                <input type="number" name="porcentaje" step="0.01" min="0" max="100" required>
-                                                <button type="submit">Actualizar</button>
-
-                                                <h3>Video ad</h3>
-                                                <iframe {{ ejercicio.tipoEjercicioID.url }}></iframe>        
-                                             </form>
+                                            {% if ejercicio.tipoEjercicioID.url %}
+                                                <iframe width="560" height="315" src="{{ ejercicio.tipoEjercicioID.url  }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                                {% else %}
+                                                    <p>No hay video disponible.</p>
+                                                {% endif %}
+                                              
                                         </div>
                                     </li>
+
                                 {% endfor %}
                             </ul>
 

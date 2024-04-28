@@ -1,11 +1,10 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    # Otras rutas URL aquí...
-    path('paciente-detalle/', views.paciente_detalle, name='paciente_detalle'),
-     path('ver-reporte/<int:terapia_id>/', views.ver_reporte, name='ver_reporte'),
-path('reporte-general/', views.reporte_general, name='reporte_general'),
- path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),
-    # Otras rutas URL aquí...
+    path('login/', include('login.urls')),
+    path('<str:paciente_cedula>/', views.paciente_detalle, name='paciente_detalle'),
+    path('grafico/ver-reporte/<int:terapia_id>/', views.ver_reporte, name='ver_reporte'),
+    path('grafico/reporte-general/<str:cedula_paciente>/', views.reporte_general, name='reporte_general'),  # Correcto
+    path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),
 ]

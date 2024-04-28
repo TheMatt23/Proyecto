@@ -73,7 +73,7 @@ class Movimiento(models.Model):
 class TipoEjercicio(models.Model):
     tipoEjercicioID = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
-    url = models.CharField(max_length=255)
+    url = models.URLField(max_length=255)
     def __str__(self):
         return self.nombre
 
@@ -94,7 +94,6 @@ class AsignarTerapias(models.Model):
 # Modelo para Resultados
 class Resultados(models.Model):
     resultadoID = models.AutoField(primary_key=True)  # Clave primaria única
-    movimientoID = models.ForeignKey(Movimiento, on_delete=models.CASCADE)
-    cantidadPos = models.IntegerField()
-    cantidadNeg = models.IntegerField()
-    porcentaje = models.FloatField()
+    terapiaID = models.ForeignKey(Terapia, on_delete=models.CASCADE)
+    cantidadPos = models.IntegerField(default=0)
+    cantidadNeg = models.IntegerField(default=0)

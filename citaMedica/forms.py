@@ -42,6 +42,7 @@ class AgregarTerapiaForm(forms.ModelForm):
 
 ###################################################
 #Terapias
+
 # forms.py
 class TerapiaForm(forms.ModelForm):
     class Meta:

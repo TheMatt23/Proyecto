@@ -1,5 +1,6 @@
 # Create your views here.
 from django.shortcuts import render, redirect,  get_object_or_404
+from django.urls import reverse
 from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
@@ -48,31 +49,27 @@ def login(request):
         
         try:
             admin = Admin.objects.get(cedula=cedula, contrasena=contrasena)
-            return redirect('admin_home')  # Redirige a la página de administrador si las credenciales son correctas
+            return redirect('admin_home')
         
         except Admin.DoesNotExist:
             try:
                 fisioterapeuta = Fisioterapeuta.objects.get(cedula=cedula, contrasena=contrasena)
                 request.session['fisioterapeuta_cedula'] = cedula  # Guarda la cédula del fisioterapeuta en la sesión
-                return redirect('buscar_paciente')  # Redirige al fisioterapeuta a la interfaz de pacientes si las credenciales son correctas
+                return redirect('buscar_paciente', fisioterapeuta_cedula=cedula)
+
             
             except Fisioterapeuta.DoesNotExist:
                 try:
                     paciente = Paciente.objects.get(cedula=cedula, contrasena=contrasena)
                     request.session['cedula_paciente'] = cedula
-                    # Aquí puedes agregar cualquier lógica adicional que necesites para el paciente
-                    return redirect('paciente_detalle')  # Redirige al paciente a la interfaz de pacientes si las credenciales son correctas y pasa la cédula del paciente
+                    return redirect('paciente_detalle', paciente_cedula=cedula)
+                
                 except Paciente.DoesNotExist:
-                    # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
                     return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
 
     return render(request, 'sesion.html')
 
 
-
-
-
-            
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente

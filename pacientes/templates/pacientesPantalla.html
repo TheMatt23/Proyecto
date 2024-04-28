@@ -77,8 +77,7 @@
   <body>
     <header>
       <h1>Detalles del Paciente</h1>
-      <a href="{% url 'cerrar_sesion' %}" class="btn-report">Cerrar Sesión</a>
-
+      <a class="nav-link" href="{% url 'home' %}">Cerrar Sesión</a>
 
     </header>
     <main>
@@ -86,9 +85,7 @@
         <p>Nombre: {{ paciente.nombre }}</p>
         <p>Apellido: {{ paciente.apellido }}</p>
         <p>Cédula: {{ paciente.cedula }}</p>
-        <a href="{% url 'reporte_general' %}" class="btn-report"
-          >Reporte General</a
-        >
+        <a href="{% url 'reporte_general' cedula_paciente=paciente.cedula %}" class="btn-report">Reporte General</a>
       </div>
       <div>
         {% if terapias_info %}
@@ -98,7 +95,8 @@
               <th>ID</th>
               <th>Nombre de la Terapia</th>
               <th>Fecha</th>
-              <th>Ver Reporte</th>
+              <th>Fisioterapeuta</th>
+              <th>Accion</th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +104,9 @@
             <tr>
               <td>{{ terapia.id }}</td>
               <td>{{ terapia.nombre_terapia }}</td>
-              <td>{{ terapia.fecha_terapia }}</td>
+              <td>{{ terapia.fecha }}</td>
+              <td>{{ terapia.terapeuta }}</td>
+
               <td>
                 <a href="{% url 'ver_reporte' terapia.id %}">Ver Reporte</a>
               </td>

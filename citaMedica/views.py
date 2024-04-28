@@ -2,8 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views import View
 from django.http import JsonResponse
-from login.models import Paciente, Fisioterapeuta, Terapia, TipoEjercicio, Movimiento, Ejercicios
+from login.models import Paciente, Fisioterapeuta, Terapia, TipoEjercicio, Movimiento, Ejercicios, Resultados
 from .forms import PacienteForm, HistorialFormSet, BuscarPacienteForm, AgregarTerapiaForm, EliminarCitaForm, TerapiaForm, TerapiaForm, MovimientoForm, TipoEjercicioForm, EjercicioComboForm
+from django.db import transaction 
+import plotly.graph_objs as go
+from django.db.models import Sum
+from plotly.offline import plot
 
 
 #Pacientes
@@ -41,6 +45,7 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
             fisioterapeuta_conectado = Fisioterapeuta.objects.get(cedula=fisioterapeuta_cedula)
             request.session['fisioterapeuta_cedula'] = fisioterapeuta_conectado.cedula
 
+
             if request.method == 'POST':
                 if 'eliminar_cita' in request.POST and eliminar_cita_form.is_valid():
                     cita_id = eliminar_cita_form.cleaned_data['cita_id']
@@ -54,7 +59,6 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
                 try:
                     paciente = Paciente.objects.get(cedula=cedula)
                     context['paciente'] = paciente
-                    #request.session['paciente_cedula'] = paciente.cedula
 
                 except Paciente.DoesNotExist:
                     context['error_message'] = "Paciente no encontrado."
@@ -82,6 +86,7 @@ class TerapiaView(View):
         paciente_cedula = paciente.cedula
         terapias = Terapia.objects.filter(cedulaPaciente=paciente)
         fisioterapeuta_cedula = request.session.get('fisioterapeuta_cedula')
+
 
         if fisioterapeuta_cedula:
             fisioterapeuta_conectado = Fisioterapeuta.objects.get(cedula=fisioterapeuta_cedula)
@@ -210,5 +215,81 @@ class ActualizarPorcentajeView(View):
         ejercicio.porcentaje = nuevo_porcentaje  # Actualiza el porcentaje
         ejercicio.save()  # Guarda el cambio en la base de datos
 
+        #terapia = ejercicio.movimientoID.terapiaID
+        
+        actualizar_resultados(terapia)
+
         # Redirigir a una vista relevante
         return redirect('terapia_view', cedula=paciente.cedula)
+    
+
+####Actulizar los porcentajes
+def calcular_ejercicios_positivos_negativos(terapia):
+    # Obtener todos los movimientos asociados con la terapia
+    movimientos = Movimiento.objects.filter(terapiaID=terapia)
+
+    # Obtener todos los ejercicios relacionados con esos movimientos
+    ejercicios = Ejercicios.objects.filter(movimientoID__in=movimientos)
+
+    # Contar ejercicios positivos y negativos
+    cantidad_positivos = sum(1 for ejercicio in ejercicios if ejercicio.porcentaje >= 70)
+    cantidad_negativos = sum(1 for ejercicio in ejercicios if ejercicio.porcentaje < 70)
+
+    return cantidad_positivos, cantidad_negativos
+
+def actualizar_resultados(terapia):
+    cantidad_positivos, cantidad_negativos = calcular_ejercicios_positivos_negativos(terapia)
+
+    with transaction.atomic():  # Para garantizar consistencia
+        # Obtener o crear el resultado para esta terapia
+        resultado, created = Resultados.objects.get_or_create(terapiaID=terapia)
+        resultado.cantidadPos = cantidad_positivos
+        resultado.cantidadNeg = cantidad_negativos
+        resultado.save()  # Guardar cambios
+    
+
+def cargar_resultados_terapia(request, terapia_id):
+    terapia = get_object_or_404(Terapia, terapiaID=terapia_id)
+    resultados = terapia.resultados_set.all()  # Obtener resultados asociados con la terapia
+
+    contexto = {
+        'terapia': terapia,
+        'resultados': resultados,
+    }
+
+    return render(request, 'terapia_view.html', contexto)
+
+
+#####
+def ver_reporte(request, terapia_id):
+    # Consulta para obtener los valores positivos y negativos de la tabla Resultados
+    resultados = Resultados.objects.filter(terapiaID=terapia_id).aggregate(
+        total_positivo=Sum('cantidadPos'),
+        total_negativo=Sum('cantidadNeg')
+    )
+
+    # Datos del gráfico
+    labels = ['Correctos', 'Incorrectos']
+    valores = [resultados['total_positivo'] or 0, resultados['total_negativo'] or 0]
+
+    # Crear el gráfico
+    data = [
+        go.Bar(
+            x=labels,
+            y=valores,
+            marker=dict(color=['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)']),
+            opacity=0.8
+        )
+    ]
+
+    layout = go.Layout(
+        title='Reporte Terapia',
+        xaxis=dict(title='Movimientos'),
+        yaxis=dict(title='Ejercicios')
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+    return render(request, 'reporteGrafico.html', {'plot_div': plot_div})
+
