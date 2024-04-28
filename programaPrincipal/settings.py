@@ -80,12 +80,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tdw',
         'USER': 'root',
-        'PASSWORD': 'mateo2324',
+        'PASSWORD': '1234majo',
         'HOST' : 'localhost',
         'PORT': ''
     }
 }
-#Hola marta
+#Hola Pepe
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
