@@ -4,7 +4,6 @@ from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
 
-
 from django.views.decorators.http import require_POST
 
 @require_POST
