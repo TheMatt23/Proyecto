@@ -60,10 +60,7 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
                     paciente = Paciente.objects.get(cedula=cedula)
                     context['paciente'] = paciente
 
-                    # Aquí deberías obtener las terapias asociadas al paciente según tu lógica
-                    # terapias = Terapia.objects.filter(...)  # Escribe tu filtro aquí
-                    # context['terapias'] = terapias
-
+              
                 except Paciente.DoesNotExist:
                     context['error_message'] = "Paciente no encontrado."
 

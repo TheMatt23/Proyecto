@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 from plotly.offline import plot
 from django.shortcuts import redirect
+from login.views import pantalla_inicio as login_pantalla_inicio
+from django.contrib.auth import logout
 
 @login_required
 def paciente_detalle(request):
@@ -29,6 +31,9 @@ def paciente_detalle(request):
         # Redirige al usuario a otra vista si no se encuentra la cédula del paciente en la sesión
         return redirect('login')  # Reemplaza 'otra_vista' con el nombre de la vista a la que quieres redirigir al usuario
 
+def cerrar_sesion(request):
+    logout(request)
+    return login_pantalla_inicio(request)
 
 def ver_reporte(request, terapia_id):
     # Consulta para obtener los valores positivos y negativos de la tabla Resultados
@@ -120,3 +125,6 @@ def reporte_general(request):
     else:
         # Manejar el caso si no se encuentra la cédula del paciente en la sesión
         return redirect('login')
+    
+    
+    
