@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terapias del Paciente</title>
-  
-
-
 </head>
 <body>
   <header>
@@ -15,7 +12,6 @@
     <a href="#">Cerrar sesión</a>
   </header>
   <main>
-  
     <div class="buscador-fechas">
       <label for="filtro-fechas">Filtro de terapia:</label>
       <br />
@@ -35,20 +31,16 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Fisioterapeuta</th>
             <th>Nombre de la Terapia</th>
             <th>Fecha</th>
-            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {% for terapia in terapias_info %}
           <tr>
             <td>{{ terapia.id }}</td>
-            <td>{{ terapia.fisioterapeuta_nombre }} {{ terapia.fisioterapeuta_apellido }}</td>
             <td>{{ terapia.nombre_terapia }}</td>
             <td>{{ terapia.fecha_terapia }}</td>
-            <td><a href="#">Ver Reporte</a></td>
           </tr>
           {% endfor %}
         </tbody>

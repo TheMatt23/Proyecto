@@ -60,8 +60,9 @@ def login(request):
             except Fisioterapeuta.DoesNotExist:
                 try:
                     paciente = Paciente.objects.get(cedula=cedula, contrasena=contrasena)
+                    request.session['cedula_paciente'] = cedula
                     # Aquí puedes agregar cualquier lógica adicional que necesites para el paciente
-                    return redirect('paciente_detalle', cedula_paciente=paciente.cedula)  # Redirige al paciente a la interfaz de pacientes si las credenciales son correctas y pasa la cédula del paciente
+                    return redirect('paciente_detalle')  # Redirige al paciente a la interfaz de pacientes si las credenciales son correctas y pasa la cédula del paciente
                 except Paciente.DoesNotExist:
                     # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
                     return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
