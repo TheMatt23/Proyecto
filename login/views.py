@@ -37,6 +37,10 @@ def add_usuario(request):
 
     return redirect('admin_home') 
 # Redirigir a la vista principal
+from django.shortcuts import redirect
+
+from django.shortcuts import redirect
+
 def login(request):
     if request.method == 'POST':
         cedula = request.POST.get('cedula')
@@ -50,13 +54,22 @@ def login(request):
             try:
                 fisioterapeuta = Fisioterapeuta.objects.get(cedula=cedula, contrasena=contrasena)
                 request.session['fisioterapeuta_cedula'] = cedula  # Guarda la cédula del fisioterapeuta en la sesión
-                return redirect('buscar_paciente', fisioterapeuta_cedula=cedula)  # Redirige a la página de búsqueda de paciente si las credenciales son correctas
+                return redirect('buscar_paciente')  # Redirige al fisioterapeuta a la interfaz de pacientes si las credenciales son correctas
             
             except Fisioterapeuta.DoesNotExist:
-                # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
-                return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
+                try:
+                    paciente = Paciente.objects.get(cedula=cedula, contrasena=contrasena)
+                    request.session['cedula_paciente'] = cedula
+                    # Aquí puedes agregar cualquier lógica adicional que necesites para el paciente
+                    return redirect('paciente_detalle')  # Redirige al paciente a la interfaz de pacientes si las credenciales son correctas y pasa la cédula del paciente
+                except Paciente.DoesNotExist:
+                    # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
+                    return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
 
     return render(request, 'sesion.html')
+
+
+
 
 
             
