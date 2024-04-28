@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte General</title>
+    <!-- Incluir la biblioteca Plotly (si no lo has hecho ya) -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 1000px; /* Ajustar el valor según sea necesario */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        .graph-container {
+            text-align: center;
+            width: 100%; /* Ajustar el ancho según sea necesario */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte General de Terapias</h1>
+        <!-- Mostrar el gráfico generado por Plotly -->
+        <div class="graph-container">
+            {{ plot_div|safe }}
+        </div>
+    </div>
+</body>
+</html>

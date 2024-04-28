@@ -1,9 +1,9 @@
 # Create your views here.
 from django.shortcuts import render, redirect,  get_object_or_404
+from django.urls import reverse
 from django import forms
 from .models import Admin
 from .models import Fisioterapeuta, Paciente
-
 
 from django.views.decorators.http import require_POST
 
@@ -38,6 +38,10 @@ def add_usuario(request):
 
     return redirect('admin_home') 
 # Redirigir a la vista principal
+from django.shortcuts import redirect
+
+from django.shortcuts import redirect
+
 def login(request):
     if request.method == 'POST':
         cedula = request.POST.get('cedula')
@@ -45,22 +49,27 @@ def login(request):
         
         try:
             admin = Admin.objects.get(cedula=cedula, contrasena=contrasena)
-            return redirect('admin_home')  # Redirige a la página de administrador si las credenciales son correctas
+            return redirect('admin_home')
         
         except Admin.DoesNotExist:
             try:
                 fisioterapeuta = Fisioterapeuta.objects.get(cedula=cedula, contrasena=contrasena)
                 request.session['fisioterapeuta_cedula'] = cedula  # Guarda la cédula del fisioterapeuta en la sesión
-                return redirect('buscar_paciente', fisioterapeuta_cedula=cedula)  # Redirige a la página de búsqueda de paciente si las credenciales son correctas
+                return redirect('buscar_paciente', fisioterapeuta_cedula=cedula)
+
             
             except Fisioterapeuta.DoesNotExist:
-                # Aquí puedes agregar un mensaje de error si las credenciales no son correctas
-                return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
+                try:
+                    paciente = Paciente.objects.get(cedula=cedula, contrasena=contrasena)
+                    request.session['cedula_paciente'] = cedula
+                    return redirect('paciente_detalle', paciente_cedula=cedula)
+                
+                except Paciente.DoesNotExist:
+                    return render(request, 'sesion.html', {'error': 'Cédula o contraseña incorrecta'})
 
     return render(request, 'sesion.html')
 
 
-            
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente

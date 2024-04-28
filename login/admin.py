@@ -45,4 +45,4 @@ class AsignarTerapiasAdmin(admin.ModelAdmin):
 
 @admin.register(Resultados)
 class ResultadosAdmin(admin.ModelAdmin):
-    list_display = ['resultadoID', 'movimientoID', 'cantidadPos', 'cantidadNeg', 'porcentaje']
+    list_display = ['resultadoID', 'terapiaID', 'cantidadPos', 'cantidadNeg']

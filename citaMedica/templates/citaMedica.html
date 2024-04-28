@@ -92,9 +92,10 @@
 <body>
     <nav>
     <h1>Fisioterapeuta</h1>
-    <button type="button" onclick="location.href='/cita/'">Pacientes</button>
-    <button type="button" onclick="location.href='/cita/'">Cerrar Sesion</button>
+    <a href="{% url 'pacientes' %}" class="btn btn-primary">Pacientes</a>
+    <a href="{% url 'home' %}" class="close-session">Cerrar Sesión</a>
     </nav>
+
 
     <form method="get" action="">
         {{ search_form.as_p }}
@@ -102,18 +103,40 @@
         <button type="button" onclick="location.href='/cita/'">Limpiar</button>
     </form>
     
-    {% if error_message %}
-        <p>{{ error_message }}</p>
-    {% elif paciente %}
-        <h2>Información del Paciente</h2>
-        <p>Nombre: {{ paciente.nombre }} {{ paciente.apellido }}</p>
-        <p>Cédula: {{ paciente.cedula }}</p>
-        <p>Celular: {{ paciente.celular }}</p>
-
-        <form id="cita-form" method="post">
-            {% csrf_token %}
-            <button type="submit" name="crear_cita">Agregar Cita Médica</button>
-        </form>
-    {% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Celular</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if error_message %}
+            <tr>
+                <td colspan="6">{{ error_message }}</td>  <!-- Mostrar error en toda la fila -->
+            </tr>
+            {% elif paciente %}
+            <tr>
+                <td>{{ paciente.cedula }}</td>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.apellido }}</td>
+                <td>{{ paciente.celular }}</td>
+                <td>{{ paciente.direccion }}</td>
+                
+                <td>
+                    <a href="{% url 'terapia_view' paciente.cedula %}" class="btn btn-primary">Terapias</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No hay registros</td>  <!-- Mensaje cuando no hay pacientes -->
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
 </body>
 </html>
