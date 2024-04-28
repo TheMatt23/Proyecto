@@ -1,55 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terapias del Paciente</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantalla de Pacientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        p.no-terapias {
+            color: #888;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn-report {
+            display: block;
+            width: 150px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn-report:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <img src="" alt="imagen clinica" />
-    <h1>Clinica Fisioterapia</h1>
-    <a href="#">Cerrar sesión</a>
-  </header>
-  <main>
-    <div class="buscador-fechas">
-      <label for="filtro-fechas">Filtro de terapia:</label>
-      <br />
-      <label for="fecha_inicio">Fecha de inicio:</label>
-      <br />
-      <input type="date" id="fecha_inicio" name="fecha_inicio" />
-      <br>
-      <label for="fecha_fin">Fecha de fin:</label>
-      <br>
-      <input type="date" id="fecha_fin" name="fecha_fin" />
-
-      <button type="button" onclick="filtrarPorFecha()">Filtrar</button>
-      <p>Historial Terapias</p>
-      <!-- Mostrar la tabla de terapias si hay información disponible -->
-      {% if terapias_info %}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre de la Terapia</th>
-            <th>Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for terapia in terapias_info %}
-          <tr>
-            <td>{{ terapia.id }}</td>
-            <td>{{ terapia.nombre_terapia }}</td>
-            <td>{{ terapia.fecha_terapia }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <!-- Mostrar un mensaje si no hay terapias disponibles -->
-      {% else %}
-      <p>No hay terapias disponibles para mostrar.</p>
-      {% endif %}
-    </div>
-  </main>
+    <header>
+      <img src="" alt="imagen_clinica">
+        <h1>Detalles del Paciente</h1>
+        <a href="">cerrar sesion</a>
+    </header>
+    <main>
+        <p>Nombre: {{ paciente.nombre }}</p>
+        <p>Apellido: {{ paciente.apellido }}</p>
+        <p>Cédula: {{ paciente.cedula }}</p>
+        {% if terapias_info %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre de la Terapia</th>
+                    <th>Fecha</th>
+                    <th>Ver Reporte</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for terapia in terapias_info %}
+                <tr>
+                    <td>{{ terapia.id }}</td>
+                    <td>{{ terapia.nombre_terapia }}</td>
+                    <td>{{ terapia.fecha_terapia }}</td>
+                    <td><a href="{% url 'ver_reporte' terapia.id %}">Ver Reporte</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-terapias">No hay terapias disponibles para mostrar.</p>
+        {% endif %}
+        <a href="{% url 'reporte_general' %}" class="btn-report">Reporte General</a>
+    </main>
 </body>
 </html>
