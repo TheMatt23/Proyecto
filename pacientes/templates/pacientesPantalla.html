@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terapias del Paciente</title>
+  
+
+
+</head>
+<body>
+  <header>
+    <img src="" alt="imagen clinica" />
+    <h1>Clinica Fisioterapia</h1>
+    <a href="#">Cerrar sesión</a>
+  </header>
+  <main>
+  
+    <div class="buscador-fechas">
+      <label for="filtro-fechas">Filtro de terapia:</label>
+      <br />
+      <label for="fecha_inicio">Fecha de inicio:</label>
+      <br />
+      <input type="date" id="fecha_inicio" name="fecha_inicio" />
+      <br>
+      <label for="fecha_fin">Fecha de fin:</label>
+      <br>
+      <input type="date" id="fecha_fin" name="fecha_fin" />
+
+      <button type="button" onclick="filtrarPorFecha()">Filtrar</button>
+      <p>Historial Terapias</p>
+      <!-- Mostrar la tabla de terapias si hay información disponible -->
+      {% if terapias_info %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fisioterapeuta</th>
+            <th>Nombre de la Terapia</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for terapia in terapias_info %}
+          <tr>
+            <td>{{ terapia.id }}</td>
+            <td>{{ terapia.fisioterapeuta_nombre }} {{ terapia.fisioterapeuta_apellido }}</td>
+            <td>{{ terapia.nombre_terapia }}</td>
+            <td>{{ terapia.fecha_terapia }}</td>
+            <td><a href="#">Ver Reporte</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <!-- Mostrar un mensaje si no hay terapias disponibles -->
+      {% else %}
+      <p>No hay terapias disponibles para mostrar.</p>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>
