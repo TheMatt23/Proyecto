@@ -16,13 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.conf import settings
+from django.conf.urls.static  import	static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', include('login.urls')),
     path('paciente/', include('formularioPaciente.urls')),
     path('cita/', include('citaMedica.urls')),
     path('terapias/', include('terapias.urls'))
-]
+]+static(settings.STATIC_URL,document_root=settings.STATICFILES_DIR)
 
 #homla
