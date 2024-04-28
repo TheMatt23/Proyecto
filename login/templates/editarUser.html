@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuario</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #eef5ff; /* Celeste */
             color: #6c757d; /* Gris hueso */
-            margin: 0;
-            padding: 0;
+        }
+
+        .container {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,8 +23,9 @@
             background-color: #ffffff; /* Blanco */
             padding: 20px;
             border-radius: 5px;
-            width: 300px;
             box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            width: 300px;
+            margin-top: 20px;
         }
 
         label {
@@ -52,21 +55,28 @@
     </style>
 </head>
 <body>
-    <h1>Editar {{ tipo }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="tipo" value="{{ tipo }}">
-        <label>Cédula:</label>
-        <input type="text" name="cedula" value="{{ item.cedula }}" readonly><br><br>
-        <label>Nombre:</label>
-        <input type="text" name="nombre" value="{{ item.nombre }}"><br><br>
-        <label>Apellido:</label>
-        <input type="text" name="apellido" value="{{ item.apellido }}"><br><br>
-        <label>Celular:</label>
-        <input type="text" name="celular" value="{{ item.celular }}"><br><br>
-        <label>Dirección:</label>
-        <input type="text" name="direccion" value="{{ item.direccion }}"><br><br>
-        <input type="submit" value="Guardar">
-    </form>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h1 class="text-center">Editar {{ tipo }}</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="tipo" value="{{ tipo }}">
+                    <label>Cédula:</label>
+                    <input type="text" name="cedula" value="{{ item.cedula }}" readonly><br><br>
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" value="{{ item.nombre }}"><br><br>
+                    <label>Apellido:</label>
+                    <input type="text" name="apellido" value="{{ item.apellido }}"><br><br>
+                    <label>Celular:</label>
+                    <input type="text" name="celular" value="{{ item.celular }}"><br><br>
+                    <label>Dirección:</label>
+                    <input type="text" name="direccion" value="{{ item.direccion }}"><br><br>
+                    <input type="submit" value="Guardar" class="btn btn-primary btn-block">
+                </form>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
