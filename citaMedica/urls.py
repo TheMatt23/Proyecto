@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import TerapiaView, MovimientoAddView, MovimientoDeleteView, TerapiaDeleteView, TipoEjercicioDeleteView, AgregarEjercicioAMovimientoView, EliminarEjercicioView
+from .views import TerapiaView, MovimientoAddView, MovimientoDeleteView, TerapiaDeleteView, TipoEjercicioDeleteView, AgregarEjercicioAMovimientoView, EliminarEjercicioView, ActualizarPorcentajeView
 
 urlpatterns = [
     path('', views.buscar_paciente, name='generar_cita'),
@@ -15,4 +15,6 @@ urlpatterns = [
     path('/terapias/tipo-ejercicio/delete/<int:tipo_ejercicio_id>/', TipoEjercicioDeleteView.as_view(), name='tipo_ejercicio_delete'),
     path('/terapias/movimiento/<int:movimiento_id>/agregar-ejercicio/', AgregarEjercicioAMovimientoView.as_view(), name='agregar_ejercicio_a_movimiento'),
     path('/terapias/ejercicio/eliminar/<int:ejercicio_id>/', EliminarEjercicioView.as_view(), name='eliminar_ejercicio'),  # Ruta para eliminar ejercicio
-]
+    path('/terapias/ejercicio/actualizar/<int:ejercicio_id>/', ActualizarPorcentajeView.as_view(), name='actualizar_ejercicio'),
+    path('/terapias/ejercicio/actualizar_porcentaje/', ActualizarPorcentajeView.as_view(), name='actualizar_porcentaje')
+    ]

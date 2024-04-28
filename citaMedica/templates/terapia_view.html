@@ -4,7 +4,34 @@
     <title>Terapias y Movimientos</title>
 </head>
 <body>
-    <h1>Terapias</h1>
+    <nav>
+        <a class="navbar-brand" onclick="location.href='/cita/'" style="cursor: pointer;">Fisioterapeuta</a>
+        <div>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pacientes' %}">Pacientes</a>
+                </li>
+                <li>
+                    <a onclick="openModal('addExerciseType')" style="cursor: pointer;">Agregar Tipo de Ejercicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="modalBackground" class="modal-background" onclick="closeModal()"></div>
+        <div id="universalModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()" style="cursor: pointer;">&times;</span>
+                <div id="modalContentArea">
+                </div>
+            </div>
+        </div>
+
+
+    <h2>Terapias</h2>
 
     <h2>Agregar nueva Terapia</h2>
     <form method="post" style="display:inline;">
@@ -18,40 +45,7 @@
         <button type="submit" name="add_terapia">Agregar Terapia</button>
     </form>
 
-    <!--Tipos Ejercicios-->
-    <button onclick="openModal()">Agregar Tipo de Ejercicio</button>
-    <div id="modalBackground" class="modal-background" onclick="closeModal()"></div>
-    <div id="tipoEjercicioModal" class="modal">
-
-    <h2>Agregar Tipo de Ejercicio </h2>
-    <form method="post" style="display:inline;">
-        {% csrf_token %}
         
-        {{ tipo_ejercicio_form.as_p }}
-        <button type="submit" name="add_tipo_ejercicio">Agregar Tipo de Ejercicio</button>
-        <button type="button" onclick="closeModal()">Cerrar</button>
-    </form>
-
-    
-
-        <h2>Lista de Tipos de Ejercicio</h2>
-        <ul>
-            {% for tipo in tipo_ejercicios %}
-                <li>
-                    {{ tipo.nombre }}
-
-                    <form method="post" action="{% url 'tipo_ejercicio_delete' tipo.tipoEjercicioID %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este tipo de ejercicio?')">Eliminar</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    </div>
-        
-
-    
     <h2>Lista de Terapias</h2>
     <ul>
         {% for terapia in terapias %}
@@ -101,13 +95,26 @@
                                             {% csrf_token %}
                                             <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este ejercicio?')">Eliminar Ejercicio</button>
                                         </form>
+
+                                        <button onclick="toggleForm()">Evaluar Ejercicio</button>
+
+                                        <div id="form-container" class="hidden">
+                                            <form method="post" action="{% url 'actualizar_porcentaje' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="ejercicio_id" value="{{ ejercicio.ejercicioID }}">
+                                                <label for="porcentaje">Porcentaje:</label>
+                                                <input type="number" name="porcentaje" step="0.01" min="0" max="100" required>
+                                                <button type="submit">Actualizar</button>
+
+                                                <h3>Video ad</h3>
+                                                <iframe {{ ejercicio.tipoEjercicioID.url }}></iframe>        
+                                             </form>
+                                        </div>
                                     </li>
                                 {% endfor %}
                             </ul>
 
                         </li>
-
-                        
                     {% endfor %}
                 </ul>
             </li>
@@ -118,6 +125,10 @@
 
 <style>
     /* Estilos para el modal */
+    .hidden {
+            display: none;
+        }
+
     .modal {
         display: none; /* Oculto por defecto */
         position: fixed;
@@ -142,16 +153,58 @@
         z-index: 5;
     }
 </style>
+
 <script>
-    // Abre el modal
-    function openModal() {
-        document.getElementById("tipoEjercicioModal").style.display = "block";
-        document.getElementById("modalBackground").style.display = "block";
+    function openModal(contentType) {
+        var modal = document.getElementById("universalModal");
+        var background = document.getElementById("modalBackground");
+        var contentArea = document.getElementById("modalContentArea");
+    
+        if (contentType === "addExerciseType") {
+            contentArea.innerHTML = `
+            <h2>Agregar Tipo de Ejercicio </h2>
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                
+                {{ tipo_ejercicio_form.as_p }}
+                <button type="submit" name="add_tipo_ejercicio">Agregar Tipo de Ejercicio</button>
+            </form>
+
+                <h2>Lista de Tipos de Ejercicio</h2>
+                <ul>
+                    {% for tipo in tipo_ejercicios %}
+                        <li>
+                            {{ tipo.nombre }}
+
+                            <form method="post" action="{% url 'tipo_ejercicio_delete' tipo.tipoEjercicioID %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este tipo de ejercicio?')">Eliminar</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            `;
+        }
+
+        modal.style.display = "block";
+        background.style.display = "block";
+    }
+    
+    function closeModal() {
+        var modal = document.getElementById("universalModal");
+        var background = document.getElementById("modalBackground");
+        
+        modal.style.display = "none";
+        background.style.display = "none";
     }
 
-    // Cierra el modal
-    function closeModal() {
-        document.getElementById("tipoEjercicioModal").style.display = "none";
-        document.getElementById("modalBackground").style.display = "none";
-    }
-</script>
+    function toggleForm() {
+            const formContainer = document.getElementById('form-container');
+            if (formContainer.classList.contains('hidden')) {
+                formContainer.classList.remove('hidden');  // Muestra el formulario
+            } else {
+                formContainer.classList.add('hidden');    // Oculta el formulario
+            }
+        }
+    </script>
+    

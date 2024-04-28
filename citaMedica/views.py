@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
 from django.views import View
 from django.http import JsonResponse
 from login.models import Paciente, Fisioterapeuta, Terapia, TipoEjercicio, Movimiento, Ejercicios
@@ -14,11 +15,10 @@ def registrar_paciente(request):
         if paciente_form.is_valid() and formset.is_valid():
             nuevo_paciente = paciente_form.save()
 
-            # Guarda el formset de lesiones, asociándolo al paciente recién creado
             formset.instance = nuevo_paciente
             formset.save()
 
-            return redirect('')  # Redirige después de guardar con éxito
+            return redirect('')  
 
     else:
         paciente_form = PacienteForm()  # formulario vacío para paciente
@@ -44,12 +44,9 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
             if request.method == 'POST':
                 if 'eliminar_cita' in request.POST and eliminar_cita_form.is_valid():
                     cita_id = eliminar_cita_form.cleaned_data['cita_id']
-                    # Eliminar la cita (o la terapia asociada)
-                    # Aquí deberías escribir el código para eliminar la cita o la terapia asociada según tu lógica
                     return JsonResponse({'message': 'Cita eliminada exitosamente.'})  # Respuesta para AJAX
 
                 if 'agregar_terapia' in request.POST and agregar_terapia_form.is_valid():
-                    # Aquí deberías escribir el código para agregar la terapia según tu lógica
                     return JsonResponse({'message': 'Terapia agregada exitosamente.'})  # Respuesta para AJAX
 
             if search_form.is_valid():
@@ -57,10 +54,7 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
                 try:
                     paciente = Paciente.objects.get(cedula=cedula)
                     context['paciente'] = paciente
-
-                    # Aquí deberías obtener las terapias asociadas al paciente según tu lógica
-                    # terapias = Terapia.objects.filter(...)  # Escribe tu filtro aquí
-                    # context['terapias'] = terapias
+                    #request.session['paciente_cedula'] = paciente.cedula
 
                 except Paciente.DoesNotExist:
                     context['error_message'] = "Paciente no encontrado."
@@ -85,6 +79,7 @@ def buscar_paciente(request, fisioterapeuta_cedula=None):
 class TerapiaView(View):
     def get(self, request, cedula):
         paciente = Paciente.objects.get(cedula=cedula) 
+        paciente_cedula = paciente.cedula
         terapias = Terapia.objects.filter(cedulaPaciente=paciente)
         fisioterapeuta_cedula = request.session.get('fisioterapeuta_cedula')
 
@@ -96,7 +91,7 @@ class TerapiaView(View):
         terapia_form = TerapiaForm()  # Formulario para crear terapia
         tipo_ejercicio_form = TipoEjercicioForm()
         ejercicio_combo_form = EjercicioComboForm() 
-    
+
         return render(request, 'terapia_view.html', {
             'paciente': paciente,
             'fisioterapeuta': fisioterapeuta_conectado,
@@ -104,7 +99,7 @@ class TerapiaView(View):
             'terapia_form': terapia_form,
             'tipo_ejercicios': tipo_ejercicios,
             'tipo_ejercicio_form': tipo_ejercicio_form,
-            'ejercicio_combo_form': ejercicio_combo_form,
+            'ejercicio_combo_form': ejercicio_combo_form
         })
 
 
@@ -113,6 +108,7 @@ class TerapiaView(View):
         fisioterapeuta_cedula = request.session.get('fisioterapeuta_cedula')
         fisioterapeuta_conectado = Fisioterapeuta.objects.get(cedula=fisioterapeuta_cedula)
         paciente = Paciente.objects.get(cedula=cedula)
+
 
         if 'add_terapia' in request.POST:
             terapia_form = TerapiaForm(request.POST)
@@ -132,9 +128,9 @@ class TerapiaView(View):
 class TerapiaDeleteView(View):
     def post(self, request, terapia_id):
         terapia = get_object_or_404(Terapia, pk=terapia_id)  
+        paciente = terapia.cedulaPaciente
         terapia.delete()  # Eliminar la terapia
-        return redirect('terapia_view')
-     
+        return redirect('terapia_view', cedula=paciente.cedula)  
     
 # Movimentos
 class MovimientoAddView(View):
@@ -163,12 +159,16 @@ class MovimientoDeleteView(View):
         paciente = terapia.cedulaPaciente  # Obtener el paciente asociado a la terapia
         return redirect('terapia_view', cedula=paciente.cedula)
 
+#############################
 class TipoEjercicioDeleteView(View):
     def post(self, request, tipo_ejercicio_id):
         tipo_ejercicio = get_object_or_404(TipoEjercicio, pk=tipo_ejercicio_id)
         tipo_ejercicio.delete()  # Elimina el tipo de ejercicio
-        return redirect('terapia_view') 
-    
+
+        return HttpResponse(status=204)
+      
+
+
 #Ejercicios####
 class AgregarEjercicioAMovimientoView(View):
     def post(self, request, movimiento_id):
@@ -196,3 +196,19 @@ class EliminarEjercicioView(View):
 
         ejercicio.delete()
         return redirect('terapia_view', cedula=paciente.cedula)  # Pasar el argumento requerido
+
+class ActualizarPorcentajeView(View):
+    def post(self, request):
+        ejercicio_id = request.POST.get('ejercicio_id')
+        # Obtiene el ejercicio a partir del ID pasado en el formulario
+        ejercicio = get_object_or_404(Ejercicios, pk=ejercicio_id)
+        terapia = ejercicio.movimientoID.terapiaID  # Acceder a la terapia a través del movimiento
+        paciente = terapia.cedulaPaciente  # Obtener la cédula del paciente asociado
+        
+        nuevo_porcentaje = float(request.POST.get('porcentaje'))
+
+        ejercicio.porcentaje = nuevo_porcentaje  # Actualiza el porcentaje
+        ejercicio.save()  # Guarda el cambio en la base de datos
+
+        # Redirigir a una vista relevante
+        return redirect('terapia_view', cedula=paciente.cedula)
