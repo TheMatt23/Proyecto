@@ -1,47 +1,82 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuario</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Estilos omitidos por brevedad */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef5ff; /* Celeste */
+            color: #6c757d; /* Gris hueso */
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #ffffff; /* Blanco */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            width: 300px;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff; /* Azul */
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* Azul más oscuro */
+        }
+
     </style>
 </head>
 <body>
-    <h1>Editar {{ tipo }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="tipo" value="{{ tipo }}">
-        <label>Cédula:</label>
-        <input type="text" name="cedula" value="{{ item.cedula }}" readonly><br><br>
-        <label>Nombre:</label>
-        <input type="text" name="nombre" value="{{ item.nombre }}"><br><br>
-        <label>Apellido:</label>
-        <input type="text" name="apellido" value="{{ item.apellido }}"><br><br>
-        <label>Celular:</label>
-        <input type="text" name="celular" value="{{ item.celular }}"><br><br>
-        <label>Dirección:</label>
-        <input type="text" name="direccion" value="{{ item.direccion }}"><br><br>
-        <!-- Campo de contraseña -->
-        <label>Contraseña:</label>
-        <input type="password" name="contrasena" id="passwordField" value="{{ item.contrasena }}"><br>
-        <!-- Botón para alternar visibilidad de la contraseña -->
-        <input type="checkbox" id="showPassword"> Mostrar Contraseña<br><br>
-        <input type="submit" value="Guardar">
-    </form>
-
-    <script>
-        // Función para alternar la visibilidad de la contraseña
-        document.getElementById("showPassword").addEventListener("change", function() {
-            var passwordField = document.getElementById("passwordField");
-            if (this.checked) {
-                passwordField.type = "text";
-            } else {
-                passwordField.type = "password";
-            }
-        });
-    </script>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h1 class="text-center">Editar {{ tipo }}</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="tipo" value="{{ tipo }}">
+                    <label>Cédula:</label>
+                    <input type="text" name="cedula" value="{{ item.cedula }}" readonly><br><br>
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" value="{{ item.nombre }}"><br><br>
+                    <label>Apellido:</label>
+                    <input type="text" name="apellido" value="{{ item.apellido }}"><br><br>
+                    <label>Celular:</label>
+                    <input type="text" name="celular" value="{{ item.celular }}"><br><br>
+                    <label>Dirección:</label>
+                    <input type="text" name="direccion" value="{{ item.direccion }}"><br><br>
+                    <input type="submit" value="Guardar" class="btn btn-primary btn-block">
+                </form>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>

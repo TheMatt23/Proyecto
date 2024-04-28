@@ -3,140 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <title>Cita Médica</title>
+    <!-- Estilos de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9; /* gris claro */
-            color: #333; /* gris oscuro */
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Gris claro */
+            color: #333; /* Gris oscuro */
             margin: 0;
             padding: 20px;
         }
 
         h1, h2 {
-            color: #007BFF; /* celeste */
+            color: #007BFF; /* Celeste */
             margin-bottom: 20px;
+            text-align: center;
         }
 
         form {
-            background-color: #fff; /* blanco */
+            background-color: #fff; /* Blanco */
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
         }
 
-        button {
-            background-color: #007BFF; /* celeste */
-            color: #fff; /* blanco */
-            padding: 6px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3; /* celeste más oscuro */
-        }
-
         table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 6px;
-            background-color: #fff; /* blanco */
+            background-color: #fff; /* Blanco */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             overflow: hidden;
         }
-
-        th, td {
-            border: none;
-            padding: 8px 10px;
-            text-align: left;
-            font-size: 0.9em;
+        .table-header-blue {
+            background-color: #007BFF; /* Azul */
+            color: white;
         }
-
         th {
-            background-color: #007BFF; /* celeste */
+            background-color: #007BFF; /* Celeste */
             color: white;
             font-weight: 600;
+            text-align: center;
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2; /* gris hueso */
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2; /* Gris hueso */
         }
 
-        tr:hover {
-            background-color: #e6e6e6; /* gris más claro */
+        tbody tr:hover {
+            background-color: #e6e6e6; /* Gris más claro */
         }
 
-        form input[type="text"],
-        form input[type="number"] {
+        th, td {
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 0.9em;
+        }
+             /* Estilos para el footer */
+             footer {
+            background-color: #007bff;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0; /* Ajuste para eliminar el margen izquierdo */
             width: 100%;
-            padding: 6px 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.9em;
+            z-index: 0;
         }
-
-        form button[type="submit"],
-        form button[type="button"] {
-            padding: 6px 10px;
-            font-size: 0.9em;
-        }
-
     </style>
 </head>
 <body>
-    <nav>
-    <h1>Fisioterapeuta</h1>
-    <a href="{% url 'pacientes' %}" class="btn btn-primary">Pacientes</a>
-    <a href="{% url 'home' %}" class="close-session">Cerrar Sesión</a>
-    </nav>
+    <div class="container">
+        <h1>Buscar Paciente por Cédula</h1>
+        
+        <form method="get" action="" class="mb-4">
+            {{ search_form.as_p }}
+            <button type="submit" class="btn btn-primary me-2">Buscar</button>
+            <button type="button" class="btn btn-secondary" onclick="location.href='/cita/'">Limpiar</button>
+        </form>
+        
+        {% if error_message %}
+            <p>{{ error_message }}</p>
+        {% elif paciente %}
+            <h2 class="mb-3">Información del Paciente</h2>
+            <div class="row mb-3">
+                <div class="col">
+                    <p><strong>Nombre:</strong> {{ paciente.nombre }} {{ paciente.apellido }}</p>
+                </div>
+                <div class="col">
+                    <p><strong>Cédula:</strong> {{ paciente.cedula }}</p>
+                </div>
+                <div class="col">
+                    <p><strong>Celular:</strong> {{ paciente.celular }}</p>
+                </div>
+            </div>
 
+            <form id="cita-form" method="post" class="mb-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Agregar Cita Médica</button>
+            </form>
 
-    <form method="get" action="">
-        {{ search_form.as_p }}
-        <button type="submit">Buscar</button>
-        <button type="button" onclick="location.href='/cita/'">Limpiar</button>
-    </form>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Cédula</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Celular</th>
-                <th>Dirección</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if error_message %}
-            <tr>
-                <td colspan="6">{{ error_message }}</td>  <!-- Mostrar error en toda la fila -->
-            </tr>
-            {% elif paciente %}
-            <tr>
-                <td>{{ paciente.cedula }}</td>
-                <td>{{ paciente.nombre }}</td>
-                <td>{{ paciente.apellido }}</td>
-                <td>{{ paciente.celular }}</td>
-                <td>{{ paciente.direccion }}</td>
-                
-                <td>
-                    <a href="{% url 'terapia_view' paciente.cedula %}" class="btn btn-primary">Terapias</a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6">No hay registros</td>  <!-- Mensaje cuando no hay pacientes -->
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+            <h2 class="mb-3">Citas Médicas</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-header-blue">
+                        <tr>
+                            <th scope="col">Nº</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Fisioterapeuta</th>
+                            <th scope="col">Paciente</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas_medicas %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td> <!-- Muestra el índice, empezando por 1 -->
+                            <td>{{ cita.fecha }}</td>
+                            <td>{{ cita.cedulaFisioterapeuta }}</td>
+                            <td>{{ cita.cedulaPaciente }}</td>
+                            <td>
+                                <!-- Botón para agregar terapia -->
+                                <form method="post" class="d-inline">  <!-- Agregar terapia -->
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
+                                    <button type="submit" name="agregar_terapia" class="btn btn-primary me-2">Agregar</button>
+                                </form>
+            
+                                <!-- Botón para eliminar cita -->
+                                <form method="post" class="d-inline">  <!-- Eliminar cita -->
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cita_id" value="{{ cita.citaID }}">
+                                    <button type="submit" name="eliminar_cita" class="btn btn-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Clínica de Fisioterapia. Todos los derechos reservados.</p>
+        <p>Ubicación: Universidad Técnica de Ambato</p>
+    </footer>
 </body>
 </html>
