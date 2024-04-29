@@ -124,153 +124,38 @@
         </div>
       </div>
     </div>
+
 <div class="container">
-    
     <h2 class="mt-4">Lista de Terapias</h2>
     <ul class="list-group">
-      {% for terapia in terapias %}
-      <li class="list-group-item">
-        {{ terapia.nombre }} {{ terapia.fecha }}
-        <!-- Formulario para agregar movimientos -->
-        <form
-          method="post"
-          action="{% url 'movimiento_add' terapia.terapiaID %}"
-          style="display: inline"
-        >
-          {% csrf_token %}
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nuevo Movimiento"
-            required
-          />
-          <button type="submit" class="btn btn-primary">
-            Agregar Movimiento
-          </button>
-        </form>
-
-        <form
-          method="post"
-          action="{% url 'terapia_delete' terapia.terapiaID %}"
-          style="display: inline"
-        >
-          {% csrf_token %}
-          <button
-            type="submit"
-            class="btn btn-danger"
-            onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')"
-          >
-            Eliminar Terapia
-          </button>
-        </form>
-        <a
-          href="{% url 'ver_reporte' terapia.terapiaID %}"
-          class="btn btn-info"
-          >Ver Reporte</a
-        >
-
-        <!-- Lista de movimientos -->
-        <h4 class="mt-3">Movimientos</h4>
-        <ul class="list-group">
-          {% for movimiento in terapia.movimiento_set.all %}
-          <li class="list-group-item">
-            {{ movimiento.nombre }}
-            <form
-              method="post"
-              action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}"
-              style="display: inline"
-            >
-              {% csrf_token %} {{ ejercicio_combo_form.as_p }}
-              <button type="submit" class="btn btn-primary">
-                Agregar Ejercicio
-              </button>
+        {% for terapia in terapias %}
+        <li class="list-group-item">
+            {{ terapia.nombre }} {{ terapia.fecha }}
+            
+            <!-- Formulario para agregar movimientos 
+            <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}" style="display: inline">
+                {% csrf_token %}
+                <input type="text" name="nombre" placeholder="Nuevo Movimiento" required>
+                <button type="submit" class="btn btn-primary">Agregar Movimiento</button>
             </form>
-            <form
-              method="post"
-              action="{% url 'movimiento_delete' movimiento.movimientoID %}"
-              style="display: inline"
-            >
-              {% csrf_token %}
-              <button
-                type="submit"
-                class="btn btn-danger"
-                onclick="return confirm('¿Estás seguro de que deseas eliminar este movimiento?')"
-              >
-                Eliminar Movimiento
-              </button>
+            -->
+
+            <!-- Botón para ver movimientos -->
+            <a href="{% url 'ver_movimientos' terapia.terapiaID %}" class="btn btn-info">Ver Movimientos</a>
+            
+            <!-- Formulario para eliminar terapia -->
+            <form method="post" action="{% url 'terapia_delete' terapia.terapiaID %}" style="display: inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">Eliminar Terapia</button>
             </form>
 
-            <h4 class="mt-3">Ejercicios Asociados</h4>
-            <ul class="list-group">
-              {% for ejercicio in movimiento.ejercicios_set.all %}
-              <li class="list-group-item">
-                {{ ejercicio.tipoEjercicioID.nombre }} - {{
-                ejercicio.porcentaje }}%
-                <form
-                  method="post"
-                  action="{% url 'actualizar_porcentaje' %}"
-                  style="display: inline"
-                >
-                  {% csrf_token %}
-                  <input
-                    type="hidden"
-                    name="ejercicio_id"
-                    value="{{ ejercicio.ejercicioID }}"
-                  />
-                  <label for="porcentaje">Porcentaje:</label>
-                  <input
-                    type="number"
-                    name="porcentaje"
-                    step="0.01"
-                    min="0"
-                    max="100"
-                    required
-                  />
-                  <button type="submit" class="btn btn-primary">
-                    Actualizar
-                  </button>
-                </form>
-                <form
-                  method="post"
-                  action="{% url 'eliminar_ejercicio' ejercicio.ejercicioID %}"
-                  style="display: inline"
-                >
-                  {% csrf_token %}
-                  <button
-                    type="submit"
-                    class="btn btn-danger"
-                    onclick="return confirm('¿Estás seguro de que deseas eliminar este ejercicio?')"
-                  >
-                    Eliminar Ejercicio
-                  </button>
-                </form>
-                <div id="form-container">
-                  {% if ejercicio.tipoEjercicioID.url %}
-                  <iframe
-                    width="560"
-                    height="315"
-                    src="{{ ejercicio.tipoEjercicioID.url  }}"
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen
-                  ></iframe>
-                  {% else %}
-                  <p>No hay video disponible.</p>
-                  {% endif %}
-                </div>
-              </li>
-              {% endfor %}
-            </ul>
-          </li>
-          {% endfor %}
-        </ul>
-      </li>
-      {% endfor %}
+            <a href="{% url 'ver_reporte' terapia.terapiaID %}" class="btn btn-info">Ver Reporte</a>
+        </li>
+        {% endfor %}
     </ul>
-  
 </div>
+
+
     <div
       id="modalBackground"
       class="modal-background"
