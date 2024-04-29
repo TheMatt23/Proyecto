@@ -5,38 +5,71 @@
     <title>Reporte General</title>
     <!-- Incluir la biblioteca Plotly (si no lo has hecho ya) -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Incluir Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+           
+            background: url('https://i.ibb.co/wpZ51Zc/fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+        
         }
         .container {
-            max-width: 1000px; /* Ajustar el valor según sea necesario */
+            max-width: 1000px; /* Ancho máximo */
+            margin: 20px auto; /* Margen superior e inferior, auto para centrar horizontalmente */
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 10px;
             background-color: #f9f9f9;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            display: flex; /* Mostrar como flexbox */
+            flex-direction: column; /* Apilar elementos verticalmente */
+            align-items: center; /* Alinear elementos horizontalmente */
+        }
+        .logo {
+            width: 100px; /* Ancho del logo */
+            margin-bottom: 20px; /* Espacio entre el logo y el contenido */
+        }
+        .content {
+            width: 100%; /* Ancho total del contenido */
+            text-align: center; /* Alinear texto al centro */
         }
         h1 {
-            text-align: center;
+            color: #007bff; /* Color del título */
+            margin-bottom: 30px; /* Espacio adicional */
         }
         .graph-container {
-            text-align: center;
             width: 100%; /* Ajustar el ancho según sea necesario */
+        }
+        .btn-back {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
+    <!-- Logo de la empresa -->
     <div class="container">
-        <h1>Reporte General de Terapias</h1>
-        <!-- Mostrar el gráfico generado por Plotly -->
-        <div class="graph-container">
-            {{ plot_div|safe }}
+        <img src="https://i.ibb.co/6WCZbKn/logo-png.png" alt="Logo de la empresa" class="logo">
+        <!-- Contenido principal -->
+        <div class="content">
+            <h1>Reporte General de Terapias</h1>
+            <!-- Mostrar el gráfico generado por Plotly -->
+            <div class="graph-container">
+                {{ plot_div|safe }}
+            </div>
+            <!-- Botón para volver a la página anterior -->
+            <button onclick="window.history.back()" class="btn-back">Volver</button>
         </div>
     </div>
 </body>

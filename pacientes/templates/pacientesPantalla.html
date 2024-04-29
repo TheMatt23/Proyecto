@@ -1,123 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantalla de Pacientes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      header {
-        background-color: #001f3f; /* Azul marino */
-        color: #fff;
-        padding: 20px 0;
-        text-align: center;
-      }
-      main {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 0 20px;
-      }
-      h1 {
-        color: #001f3f; /* Azul marino */
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-      }
-      th,
-      td {
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-        text-align: left;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-      tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-      tr:hover {
-        background-color: #f2f2f2;
-      }
-      a {
-        color: #007bff;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-      p.no-terapias {
-        color: #888;
-        text-align: center;
-        margin-top: 20px;
-      }
-      .btn-report {
-        display: block;
-        width: 150px;
-        margin: 20px auto;
-        padding: 10px;
-        text-align: center;
-        background-color: #007bff;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-      }
-      .btn-report:hover {
-        background-color: #0056b3;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff; /* Azul */
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            color: #ffffff; /* Azul */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th,
+        td {
+            padding: 15px; /* Incremento del padding para más espacio */
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        p.no-terapias {
+            color: #888;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn-report {
+            display: block;
+            width: 150px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn-report:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 0;
+        }
     </style>
-  </head>
-  <body>
-    <header>
-      <h1>Detalles del Paciente</h1>
-      <a class="nav-link" href="{% url 'home' %}">Cerrar Sesión</a>
-
+</head>
+<body>
+    <header class="bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+        <img src="https://i.ibb.co/6WCZbKn/logo-png.png" width="100px" alt="imagenClinica" class="clinic-logo">
+        <h1 class="m-0">Clínica Fisioterapia</h1>
+        <a href="{% url 'home' %}" class="close-session text-white text-decoration-none">Cerrar Sesión</a>
     </header>
     <main>
-      <div>
-        <p>Nombre: {{ paciente.nombre }}</p>
-        <p>Apellido: {{ paciente.apellido }}</p>
-        <p>Cédula: {{ paciente.cedula }}</p>
-        <a href="{% url 'reporte_general' cedula_paciente=paciente.cedula %}" class="btn-report">Reporte General</a>
-      </div>
-      <div>
-        {% if terapias_info %}
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre de la Terapia</th>
-              <th>Fecha</th>
-              <th>Fisioterapeuta</th>
-              <th>Accion</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for terapia in terapias_info %}
-            <tr>
-              <td>{{ terapia.id }}</td>
-              <td>{{ terapia.nombre_terapia }}</td>
-              <td>{{ terapia.fecha }}</td>
-              <td>{{ terapia.terapeuta }}</td>
-
-              <td>
-                <a href="{% url 'ver_reporte' terapia.id %}">Ver Reporte</a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <p class="no-terapias">No hay terapias disponibles para mostrar.</p>
-        {% endif %}
-      </div>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h3 class="card-title">Datos del Paciente</h3>
+                    <p class="card-text"><strong>Nombre:</strong> {{ paciente.nombre }}</p>
+                    <p class="card-text"><strong>Apellido:</strong> {{ paciente.apellido }}</p>
+                    <p class="card-text"><strong>Cédula:</strong> {{ paciente.cedula }}</p>
+                    <a href="{% url 'reporte_general' cedula_paciente=paciente.cedula %}" class="btn btn-primary">Reporte General</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% if terapias_info %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre de la Terapia</th>
+                                <th>Fecha</th>
+                                <th>Fisioterapeuta</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for terapia in terapias_info %}
+                            <tr>
+                                <td>{{ terapia.id }}</td>
+                                <td>{{ terapia.nombre_terapia }}</td>
+                                <td>{{ terapia.fecha }}</td>
+                                <td>{{ terapia.terapeuta }}</td>
+                                <td>
+                                    <a href="{% url 'ver_reporte' terapia.id %}" class="btn btn-primary">Ver Reporte</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="no-terapias">No hay terapias disponibles para mostrar.</p>
+                {% endif %}
+            </div>
+        </div>
     </main>
-  </body>
+
+    <footer>
+      <div class="container">
+          <p>&copy; 2024 Clínica de Fisioterapia. Todos los derechos reservados.</p>
+          <p>Ubicación: Universidad Técnica de Ambato</p>
+      </div>
+  </footer>
+</body>
 </html>

@@ -6,58 +6,61 @@
     <title>Document</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      body{
-        background-color: #e1e1e1; /* Color de fondo para todo el documento */
-      }
-      .container{
-        width: 400px;
-        height: 400px;
-        background-color: #fff; /* Fondo del contenedor */
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      .login {
-        padding: 20px;
-      }
-      .text-center {
-        text-align: center !important; 
-      }
-      .btn-primary {
-        background-color: #001f3f; /* Color de fondo del botón */
-        border-color: #001f3f; /* Color del borde del botón */
-      }
-      .btn-primary:hover {
-        background-color: #003061; /* Color de fondo del botón al pasar el mouse */
-        border-color: #003061; /* Color del borde del botón al pasar el mouse */
-      }
+        body {
+            background: url('https://i.ibb.co/wpZ51Zc/fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+  
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Agrega un fondo blanco transparente para mejorar la legibilidad */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .login {
+            padding: 20px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="row justify-content-center align-items-center h-100">
+        <div class="row justify-content-center align-items-center">
             <div class="col-md-12">
-                <div class="contenedor-login">
-                    <div class="login">
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            <h3 class="text-center">Iniciar Sesión</h3>
-                            {% if error %}
-                                <p class="text-danger text-center">{{ error }}</p> 
-                            {% endif %}
-                            <div class="form-group">
-                                <label for="cedula">Usuario</label>
-                                <input class="form-control" type="text" name="cedula" id="cedula" placeholder="Cédula" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="contrasena">Contraseña</label>
-                                <input class="form-control" type="password" name="contrasena" id="contrasena" placeholder="Contraseña" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Ingresar</button> 
-                        </form>
+                <div class="login">
+                    <div class="text-center mb-4">
+                        <img src="https://i.ibb.co/6WCZbKn/logo-png.png" alt="imagenClinica" class="img-fluid" style="max-height: 100px;">
                     </div>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <h3 class="text-center mb-4">Iniciar Sesión</h3>
+                        {% if error %}
+                            <p class="text-danger text-center">{{ error }}</p>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="cedula">Usuario</label>
+                            <input class="form-control" type="text" name="cedula" id="cedula" placeholder="Cédula" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contrasena">Contraseña</label>
+                            <input class="form-control" type="password" name="contrasena" id="contrasena" placeholder="Contraseña" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                    </form>
                 </div>
             </div>
         </div>
