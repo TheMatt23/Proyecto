@@ -86,10 +86,10 @@ class Ejercicios(models.Model):
 
 #################################################
 # Modelo para Asignar las terapias
-class AsignarTerapias(models.Model):
-    AgigID = models.AutoField(primary_key=True)
-    terapiaID = models.ForeignKey(Terapia, on_delete=models.CASCADE)
-    fecha = models.DateField(auto_now_add=True)
+#class AsignarTerapias(models.Model):
+ #   AgigID = models.AutoField(primary_key=True)
+  #  terapiaID = models.ForeignKey(Terapia, on_delete=models.CASCADE)
+   # fecha = models.DateField(auto_now_add=True)
 
 # Modelo para Resultados
 class Resultados(models.Model):

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Movimientos y Ejercicios</title>
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+</head>
+<body>
+    <div class="container">
+        <h2>Movimientos para la terapia: {{ terapia.nombre }}</h2>
+        
+        <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}">
+            {% csrf_token %}
+            {{ movimiento_form.as_p }}
+            <button type="submit" class="btn btn-primary">Agregar Movimiento</button>
+        </form>
+
+        <!-- Lista de movimientos -->
+        <ul class="list-group mt-3">
+            {% for movimiento in movimientos %}
+                <li class="list-group-item">
+                    {{ movimiento.nombre }}
+                    
+                    <!-- Formulario para eliminar movimiento -->
+                    <form method="post" action="{% url 'movimiento_delete' movimiento.movimientoID %}" style="display: inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este movimiento?')">Eliminar</button>
+                    </form>
+                    
+                    <h4>Ejercicios Asociados</h4>
+                    <!-- Formulario para agregar ejercicios -->
+                    <form method="post" action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}" style="display: inline">
+                        {% csrf_token %}
+                        {{ ejercicio_combo_form.as_p }}
+                        <button type="submit" class="btn btn-primary">Agregar Ejercicio</button>
+                    </form>
+                    
+                    <!-- Lista de ejercicios -->
+                    <ul class="list-group mt-2">
+                        {% for ejercicio in movimiento.ejercicios_set.all %}
+                            <li class="list-group-item">
+                                {{ ejercicio.tipoEjercicioID.nombre }} - {{ ejercicio.porcentaje }}%
+                                
+                                <!-- Formulario para eliminar ejercicio -->
+                                <form method="post" action="{% url 'eliminar_ejercicio' ejercicio.ejercicioID %}" style="display: inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este ejercicio?')">Eliminar</button>
+                                </form>
+                                
+                                <!-- Formulario para actualizar porcentaje -->
+                                <form method="post" action="{% url 'actualizar_porcentaje' %}" style="display: inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="ejercicio_id" value="{{ ejercicio.ejercicioID }}">
+                                    <input type="number" name="porcentaje" step="0.01" min="0" max="100" required>
+                                    <button type="submit" class="btn btn-primary">Actualizar Porcentaje</button>
+                                </form>
+
+                                <div id="form-container">
+                                    {% if ejercicio.tipoEjercicioID.url %}
+                                    <iframe
+                                      width="560"
+                                      height="315"
+                                      src="{{ ejercicio.tipoEjercicioID.url  }}"
+                                      title="YouTube video player"
+                                      frameborder="0"
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                      referrerpolicy="strict-origin-when-cross-origin"
+                                      allowfullscreen
+                                    ></iframe>
+                                    {% else %}
+                                    <p>No hay video disponible.</p>
+                                    {% endif %}
+                                  </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{% url 'terapia_view' terapia.cedulaPaciente.cedula %}" class="btn btn-secondary mt-3">Regresar a Terapias</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

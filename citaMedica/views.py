@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.http import HttpResponse
 from django.views import View
 from django.http import JsonResponse
@@ -136,33 +136,47 @@ class TerapiaDeleteView(View):
         paciente = terapia.cedulaPaciente
         terapia.delete()  # Eliminar la terapia
         return redirect('terapia_view', cedula=paciente.cedula)  
+
+
+####Movimientos
+def ver_movimientos(request, terapia_id):
+    terapia = get_object_or_404(Terapia, terapiaID=terapia_id)
+    movimientos = Movimiento.objects.filter(terapiaID=terapia)
     
-# Movimentos
+    movimiento_form = MovimientoForm()  # Formulario para agregar movimientos
+    ejercicio_combo_form = EjercicioComboForm()  # Formulario para agregar ejercicios
+
+    return render(request, 'movimientos.html', {
+        'terapia': terapia,
+        'movimientos': movimientos,
+        'movimiento_form': movimiento_form,
+        'ejercicio_combo_form': ejercicio_combo_form,
+    })
+
+
 class MovimientoAddView(View):
     def post(self, request, terapia_id):
         terapia = get_object_or_404(Terapia, pk=terapia_id)
         movimiento_form = MovimientoForm(request.POST)
+
         if movimiento_form.is_valid():
-            # Asigna la terapia al movimiento antes de guardarlo
             movimiento = movimiento_form.save(commit=False)
             movimiento.terapiaID = terapia
-            ejercicio = movimiento_form.cleaned_data.get('ejercicio')
-            if ejercicio:
-                movimiento.movimientoID = ejercicio
-            movimiento.save()  # Guarda el movimiento
+            movimiento.save()
 
-        paciente = terapia.cedulaPaciente  # Asegúrate de obtener la cédula del paciente
-        return redirect('terapia_view', cedula=paciente.cedula)  # Redirige a la misma página
+        # Redirige a la vista de movimientos de esta terapia
+        return redirect(reverse('ver_movimientos', kwargs={'terapia_id': terapia_id}))
+      # Redirige a la misma página
 
 # Vista para eliminar movimientos
 class MovimientoDeleteView(View):
     def post(self, request, movimiento_id):
         movimiento = get_object_or_404(Movimiento, pk=movimiento_id)
         terapia = movimiento.terapiaID  
-        movimiento.delete() 
+        movimiento.delete()
         
-        paciente = terapia.cedulaPaciente  # Obtener el paciente asociado a la terapia
-        return redirect('terapia_view', cedula=paciente.cedula)
+        # Redirige a la vista que muestra los movimientos de una terapia
+        return redirect(reverse('ver_movimientos', kwargs={'terapia_id': terapia.terapiaID}))
 
 #############################
 class TipoEjercicioDeleteView(View):
@@ -178,8 +192,7 @@ class TipoEjercicioDeleteView(View):
 class AgregarEjercicioAMovimientoView(View):
     def post(self, request, movimiento_id):
         movimiento = get_object_or_404(Movimiento, pk=movimiento_id)
-        terapia = movimiento.terapiaID  
-        paciente = terapia.cedulaPaciente 
+        terapia = movimiento.terapiaID  # Accede a la terapia a la que pertenece el movimiento
 
         ejercicio_combo_form = EjercicioComboForm(request.POST)
         
@@ -191,37 +204,33 @@ class AgregarEjercicioAMovimientoView(View):
                 porcentaje=0  
             )
         
-        return redirect('terapia_view', cedula=paciente.cedula)  # Proporcionar la cédula del paciente
+        # Redirigir a la vista que muestra los movimientos de la terapia correspondiente
+        return redirect(reverse('ver_movimientos', kwargs={'terapia_id': terapia.terapiaID}))  # Proporcionar la cédula del paciente
     
 class EliminarEjercicioView(View):
     def post(self, request, ejercicio_id):
         ejercicio = get_object_or_404(Ejercicios, pk=ejercicio_id)
         terapia = ejercicio.movimientoID.terapiaID  # Acceder a la terapia a través del movimiento
-        paciente = terapia.cedulaPaciente  # Obtener la cédula del paciente asociado
-
+        
         ejercicio.delete()
-        return redirect('terapia_view', cedula=paciente.cedula)  # Pasar el argumento requerido
+        return redirect(reverse('ver_movimientos', kwargs={'terapia_id': terapia.terapiaID})) # Pasar el argumento requerido
 
 class ActualizarPorcentajeView(View):
     def post(self, request):
         ejercicio_id = request.POST.get('ejercicio_id')
-        # Obtiene el ejercicio a partir del ID pasado en el formulario
         ejercicio = get_object_or_404(Ejercicios, pk=ejercicio_id)
         terapia = ejercicio.movimientoID.terapiaID  # Acceder a la terapia a través del movimiento
-        paciente = terapia.cedulaPaciente  # Obtener la cédula del paciente asociado
         
+        # Actualizar el porcentaje
         nuevo_porcentaje = float(request.POST.get('porcentaje'))
+        ejercicio.porcentaje = nuevo_porcentaje
+        ejercicio.save()
 
-        ejercicio.porcentaje = nuevo_porcentaje  # Actualiza el porcentaje
-        ejercicio.save()  # Guarda el cambio en la base de datos
-
-        #terapia = ejercicio.movimientoID.terapiaID
-        
+        # Actualizar resultados
         actualizar_resultados(terapia)
 
-        # Redirigir a una vista relevante
-        return redirect('terapia_view', cedula=paciente.cedula)
-    
+        # Redirigir a la vista que muestra movimientos de esta terapia
+        return redirect(reverse('ver_movimientos', kwargs={'terapia_id': terapia.terapiaID}))
 
 ####Actulizar los porcentajes
 def calcular_ejercicios_positivos_negativos(terapia):
@@ -257,7 +266,7 @@ def cargar_resultados_terapia(request, terapia_id):
         'resultados': resultados,
     }
 
-    return render(request, 'terapia_view.html', contexto)
+    return render(request, 'movimientos.html', contexto)
 
 
 #####

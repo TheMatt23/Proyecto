@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Admin, Paciente, Fisioterapeuta, TipoLesion, HistorialPaciente, Terapia, Movimiento, TipoEjercicio, Ejercicios, AsignarTerapias, Resultados
+from .models import Admin, Paciente, Fisioterapeuta, TipoLesion, HistorialPaciente, Terapia, Movimiento, TipoEjercicio, Ejercicios, Resultados
 
 # Register your models here.
 
@@ -38,10 +38,6 @@ class TipoEjercicioAdmin(admin.ModelAdmin):
 @admin.register(Ejercicios)
 class EjerciciosAdmin(admin.ModelAdmin):
     list_display = ['ejercicioID', 'tipoEjercicioID', 'movimientoID', 'porcentaje']
-
-@admin.register(AsignarTerapias)
-class AsignarTerapiasAdmin(admin.ModelAdmin):
-    list_display = ['AgigID', 'terapiaID', 'fecha']
 
 @admin.register(Resultados)
 class ResultadosAdmin(admin.ModelAdmin):
