@@ -7,10 +7,12 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        
+        body{
+            background-color: #e4ebf0;
+        }
            footer {
-            background-color: #007bff;
-            color: #f2f2f2;
+            background-color: #4180ab; /* Azul oscuro */
+            color: #fff; /* Blanco */
             text-align: center;
             padding: 10px 0;
             position: fixed;
@@ -19,11 +21,14 @@
             width: 100%;
             z-index: 0;
         }
+        header{
+            background-color:#4180ab ;
+        }
     </style>
 </head>
 <body>
     <!-- Encabezado -->
-    <header class="bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+    <header class=" text-white p-3 d-flex justify-content-between align-items-center">
         <img src="https://i.ibb.co/6WCZbKn/logo-png.png" width="100px" alt="imagenClinica" class="clinic-logo">
         <h1 class="m-0">Clínica Fisioterapia</h1>
         <a href="{% url 'home' %}" class="close-session text-white text-decoration-none">Cerrar Sesión</a>

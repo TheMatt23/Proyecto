@@ -1,89 +1,168 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimientos y Ejercicios</title>
-    <link
-        rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Cambiar colores */
+        body {
+            background-color:  #2f77a7; /* Fondo de página */
+        }
+        .custom-bg-color {
+            background-color: #85c3ef!important; /* Color de contenedores */
+            color: #000000; /* Color de texto en contenedores */
+        }
+        .custom-ul-color {
+            background-color:#85c3ef!important; /* Color de fondo de elementos ul */
+        }
+        .card.custom-bg-color {
+    background-color:#85c3ef !important; /* Cambiar a un color amarillo, por ejemplo */
+    color: #000000; /* Color de texto en las tarjetas */
+}
+        .range-container {
+            position: relative;
+        }
+        .range-container input[type=range] {
+            width: 100%;
+            margin-top: 5px;
+        }
+        .range-container span {
+            position: absolute;
+            right: 0;
+            margin-top: 7px;
+        }
+        .porcentaje-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.porcentaje-display h2 {
+    margin-right: 5px; /* Ajusta el espacio entre el número y el signo de porcentaje */
+    font-size: 7rem; /* Tamaño del porcentaje */
+    color:#2878ae; /* Color del porcentaje */
+}
+
+.porcentaje-display span {
+    font-size: 4.5rem; /* Tamaño del signo de porcentaje */
+    color:#2878ae;; /* Color del signo de porcentaje */
+}
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <h2>Movimientos para la terapia: {{ terapia.nombre }}</h2>
-        
-        <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}">
+    <div class="container mt-4 custom-bg-color p-4">
+        <h2 class="mb-4">Movimientos para la terapia: {{ terapia.nombre }}</h2>
+
+        <!-- Formulario para agregar movimiento -->
+        <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}" class="mb-4">
             {% csrf_token %}
             {{ movimiento_form.as_p }}
             <button type="submit" class="btn btn-primary">Agregar Movimiento</button>
         </form>
 
-        <!-- Lista de movimientos -->
-        <ul class="list-group mt-3">
-            {% for movimiento in movimientos %}
-                <li class="list-group-item">
-                    {{ movimiento.nombre }}
-                    
-                    <!-- Formulario para eliminar movimiento -->
-                    <form method="post" action="{% url 'movimiento_delete' movimiento.movimientoID %}" style="display: inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este movimiento?')">Eliminar</button>
-                    </form>
-                    
-                    <h4>Ejercicios Asociados</h4>
-                    <!-- Formulario para agregar ejercicios -->
-                    <form method="post" action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}" style="display: inline">
-                        {% csrf_token %}
-                        {{ ejercicio_combo_form.as_p }}
-                        <button type="submit" class="btn btn-primary">Agregar Ejercicio</button>
-                    </form>
-                    
-                    <!-- Lista de ejercicios -->
-                    <ul class="list-group mt-2">
-                        {% for ejercicio in movimiento.ejercicios_set.all %}
-                            <li class="list-group-item">
-                                {{ ejercicio.tipoEjercicioID.nombre }} - {{ ejercicio.porcentaje }}%
-                                
-                                <!-- Formulario para eliminar ejercicio -->
-                                <form method="post" action="{% url 'eliminar_ejercicio' ejercicio.ejercicioID %}" style="display: inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este ejercicio?')">Eliminar</button>
-                                </form>
-                                
-                                <!-- Formulario para actualizar porcentaje -->
-                                <form method="post" action="{% url 'actualizar_porcentaje' %}" style="display: inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="ejercicio_id" value="{{ ejercicio.ejercicioID }}">
-                                    <input type="number" name="porcentaje" step="0.01" min="0" max="100" required>
-                                    <button type="submit" class="btn btn-primary">Actualizar Porcentaje</button>
-                                </form>
+        {% for movimiento in movimientos %}
+        <div class="accordion" id="accordion{{ forloop.counter }}">
+            <div class="card custom-bg-color">
+                <div class="card-header" id="heading{{ forloop.counter }}">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link text-dark" type="button" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                            {{ movimiento.nombre }}
+                        </button>
+                    </h2>
+                </div>
+                
+                <div class="col-md-6 text-right">
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <!-- Botones de eliminar y agregar ejercicio -->
+                        <div class="btn-group mr-2" role="group" aria-label="Agregar y eliminar ejercicio">
+                            <!-- Formulario para agregar ejercicios -->
+                            <form method="post" action="{% url 'agregar_ejercicio_a_movimiento' movimiento.movimientoID %}" style="display: inline;">
+                                {% csrf_token %}
+                                {{ ejercicio_combo_form.as_p }}
+                                <button type="submit" class="btn btn-sm btn-info mr-2">Agregar Ejercicio</button>
+                            </form>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Eliminar movimiento">
+                            <!-- Formulario para eliminar movimiento -->
+                            <form method="post" action="{% url 'movimiento_delete' movimiento.movimientoID %}" style="display: inline;">
+                                {% csrf_token %}
+                                <br>
+                                <br>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este movimiento?')">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" id="collapse{{ forloop.counter }}" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion{{ forloop.counter }}">
+                    <div class="card-body custom-bg-color">
+                        <p>Ejercicios Asociados</p>
+                        <ul class="list-group mt-2 custom-ul-color">
+                            {% for ejercicio in movimiento.ejercicios_set.all %}
+                            <li class="list-group-item custom-bg-color">
+                              
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- Formulario para actualizar porcentaje -->
+                                        <form method="post" action="{% url 'actualizar_porcentaje' %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="ejercicio_id" value="{{ ejercicio.ejercicioID }}">
+                                            <button type="submit" class="btn btn-sm btn-info mr-2">Actualizar Porcentaje</button>
+                                            <div class="range-container">
+                                                <input type="range" name="porcentaje" value="{{ ejercicio.porcentaje }}" min="0" max="100" step="1" onchange="updateSpan(this.value)">
+                                               <br>
+                                                <span id="porcentajeSpan">{{ ejercicio.porcentaje }}%</span>
+                                            </div>
+                                        </form>
+                                    
+                                        <!-- Información del ejercicio -->
+                                        <div class="exercise-info text-center">
+                                            <br>
+                                            <br>
+                                            <h5>{{ ejercicio.tipoEjercicioID.nombre }}</h5>
+                                            <div class="porcentaje-display">
+                                                <h2 class="display-4">{{ ejercicio.porcentaje }}</h2>
+                                                <span>%</span>
+                                            </div>
 
-                                <div id="form-container">
-                                    {% if ejercicio.tipoEjercicioID.url %}
-                                    <iframe
-                                      width="560"
-                                      height="315"
-                                      src="{{ ejercicio.tipoEjercicioID.url  }}"
-                                      title="YouTube video player"
-                                      frameborder="0"
-                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                      referrerpolicy="strict-origin-when-cross-origin"
-                                      allowfullscreen
-                                    ></iframe>
-                                    {% else %}
-                                    <p>No hay video disponible.</p>
-                                    {% endif %}
-                                  </div>
+
+                                            <form method="post" action="{% url 'eliminar_ejercicio' ejercicio.ejercicioID %}"  style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Desea eliminar este ejercicio?')">Eliminar</button>
+                                            </form>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if ejercicio.tipoEjercicioID.url %}
+                                        <iframe width="100%" height="315" src="{{ ejercicio.tipoEjercicioID.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        {% else %}
+                                        <p>No hay video disponible.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                               
                             </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-        
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
         <a href="{% url 'terapia_view' terapia.cedulaPaciente.cedula %}" class="btn btn-secondary mt-3">Regresar a Terapias</a>
     </div>
-
+    <script>
+         function updateSpan(value) {
+        document.getElementById('porcentajeSpan').innerText = value + '%';
+    }
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

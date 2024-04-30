@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <title>Terapias y Movimientos</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <style>
-      /* Estilos personalizados */
-      .navbar-custom {
-        background-color: #007bff; /* Azul */
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1000; /* Asegura que el navbar esté encima de otros elementos */
+      body{
+        background-color: #e4ebf0;
       }
+        /* Estilos personalizados */
+        .navbar-custom {
+            background-color: #4180ab; /* Azul oscuro */
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Asegura que el navbar esté encima de otros elementos */
+        }
 
-      .navbar-custom .navbar-brand,
-      .navbar-custom .navbar-nav .nav-link {
-        color: white !important; /* Texto blanco */
-      }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav .nav-link {
+            color: white !important; /* Texto blanco */
+        }
 
-      .navbar-custom .navbar-brand img {
-        width: 50px; /* Tamaño del logo */
-        margin-right: 10px; /* Espacio entre el logo y el texto */
-      }
+        .navbar-custom .navbar-brand img {
+            width: 50px; /* Tamaño del logo */
+            margin-right: 10px; /* Espacio entre el logo y el texto */
+        }
 
-      /* Estilos para los recuadros */
-      .recuadro {
-        padding: 20px;
-        margin-bottom: 20px;
-      }
+        /* Estilos para los recuadros */
+        .recuadro {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-      .recuadro-paciente {
-        background-color: #f0f0f0; /* Color gris claro */
-      }
+        .recuadro-paciente {
+            background-color: #e4ebf0; /* Fondo gris claro */
+        }
 
-      .recuadro-terapia {
-        background-color: #e0e0e0; /* Color gris más claro */
-      }
+        .recuadro-terapia {
+            background-color: #e0e0e0; /* Fondo gris más claro */
+        }
+
         /* Estilos para el footer */
         footer {
-            background-color: #007bff;
-            color: #f2f2f2;
+            background-color: #4180ab; /* Azul oscuro */
+            color: white; /* Texto blanco */
             text-align: center;
             padding: 10px 0;
             position: fixed;
@@ -53,142 +54,162 @@
             z-index: 0;
         }
     </style>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-custom">
-      <div class="container">
-        <a class="navbar-brand" href="/cita/"
-          ><img src="ruta_a_tu_logo.png" alt="Logo" />Fisioterapeuta</a
-        >
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'pacientes' %}">Pacientes</a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                onclick="openModal('addExerciseType')"
-                style="cursor: pointer"
-                >Agregar Tipo de Ejercicio</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Cerrar Sesión</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="recuadro recuadro-paciente">
-            <br>
-            <br>
-            <h2 class="mb-4">Paciente</h2>
-            <p>Cedula: {{ paciente.cedula }}</p>
-            <p>Nombre: {{ paciente.nombre }}</p>
-            <p>Apellido: {{ paciente.apellido }}</p>
-            <button onclick="window.history.back()" class="btn btn-primary">Volver</button>
-          </div>
+        <a class="navbar-brand" href="/cita/">
+            <img src="https://i.ibb.co/6WCZbKn/logo-png.png" alt="Logo" />
+            Fisioterapeuta
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pacientes' %}">Pacientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="openModal('addExerciseType')" style="cursor: pointer">Agregar Tipo de
+                        Ejercicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Cerrar Sesión</a>
+                </li>
+            </ul>
         </div>
-        <div class="col-md-6">
-          <div class="recuadro recuadro-terapia">
-            <h2 class="mb-4">Terapia</h2>
-            <h2>Agregar nueva Terapia</h2>
-            <form method="post">
-            
-              <h3>Terapia</h3>
-              {% csrf_token %} {{ terapia_form.as_p }}
-              <button type="submit" name="add_terapia" class="btn btn-primary">
-                Agregar Terapia
-              </button>
-            </form>
-        </div>
-
-        
-        </div>
-      </div>
     </div>
-
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow recuadro recuadro-paciente">
+                <div class="card-body">
+                    <br>
+                    <br>
+                    <h2 class="card-title mb-4">Detalles del Paciente</h2>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="fw-bold">Cédula:</label>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0">{{ paciente.cedula }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="fw-bold">Nombre:</label>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0">{{ paciente.nombre }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="fw-bold">Apellido:</label>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0">{{ paciente.apellido }}</p>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button onclick="window.history.back()" class="btn btn-primary btn-block">Volver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow recuadro recuadro-terapia">
+                <div class="card-body">
+                    <br>
+                    <br>
+                    <br>
+                    <h2 class="card-title mb-4">Agregar Nueva Terapia</h2>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="terapia_nombre" class="form-label">Nombre de la Terapia</label>
+                            {{ terapia_form.nombre.errors }}
+                            {{ terapia_form.nombre }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="terapia_fecha" class="form-label">Fecha</label>
+                            {{ terapia_form.fecha.errors }}
+                            {{ terapia_form.fecha }}
+                        </div>
+                        <div class="d-grid">
+                            {% csrf_token %}
+                            <button type="submit" name="add_terapia" class="btn btn-primary btn-block">Agregar
+                                Terapia
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <h2 class="mt-4">Lista de Terapias</h2>
-    <ul class="list-group">
+    <div class="list-group">
         {% for terapia in terapias %}
-        <li class="list-group-item">
-            {{ terapia.nombre }} {{ terapia.fecha }}
-            
-            <!-- Formulario para agregar movimientos 
-            <form method="post" action="{% url 'movimiento_add' terapia.terapiaID %}" style="display: inline">
-                {% csrf_token %}
-                <input type="text" name="nombre" placeholder="Nuevo Movimiento" required>
-                <button type="submit" class="btn btn-primary">Agregar Movimiento</button>
-            </form>
-            -->
-
-            <!-- Botón para ver movimientos -->
-            <a href="{% url 'ver_movimientos' terapia.terapiaID %}" class="btn btn-info">Ver Movimientos</a>
-            
-            <!-- Formulario para eliminar terapia -->
-            <form method="post" action="{% url 'terapia_delete' terapia.terapiaID %}" style="display: inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">Eliminar Terapia</button>
-            </form>
-
-            <a href="{% url 'ver_reporte' terapia.terapiaID %}" class="btn btn-info">Ver Reporte</a>
-        </li>
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">{{ terapia.nombre }}</h5>
+                        <p class="mb-1">{{ terapia.fecha }}</p>
+                    </div>
+                    <div>
+                        <!-- Botón para ver movimientos -->
+                        <a href="{% url 'ver_movimientos' terapia.terapiaID %}" class="btn btn-sm btn-info mr-2">Ver
+                            Movimientos</a>
+                        <!-- Botón para ver el reporte -->
+                        <a href="{% url 'ver_reporte' terapia.terapiaID %}" class="btn btn-sm btn-info mr-2">Ver
+                            Reporte</a>
+                        <!-- Formulario para eliminar terapia -->
+                        <form method="post" action="{% url 'terapia_delete' terapia.terapiaID %}" style="display: inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Estás seguro de que deseas eliminar esta terapia?')">
+                                Eliminar Terapia
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
+</div>
+<div id="modalBackground" class="modal-background" onclick="closeModal()"></div>
+<div id="universalModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Tipo de Ejercicio</h5>
+                <button type="button" class="close" onclick="closeModal()">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalContentArea">
+                <!-- Aquí se carga el contenido del modal -->
+            </div>
+        </div>
+    </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <div
-      id="modalBackground"
-      class="modal-background"
-      onclick="closeModal()"
-    ></div>
-    <div id="universalModal" class="modal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Agregar Tipo de Ejercicio</h5>
-            <button type="button" class="close" onclick="closeModal()">
-              <span>&times;</span>
-            </button>
-          </div>
-          <div class="modal-body" id="modalContentArea">
-            <!-- Aquí se carga el contenido del modal -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-      function openModal(contentType) {
+<script>
+    function openModal(contentType) {
         var modal = document.getElementById("universalModal");
         var background = document.getElementById("modalBackground");
         var contentArea = document.getElementById("modalContentArea");
 
         if (contentType === "addExerciseType") {
-          contentArea.innerHTML = `
+            contentArea.innerHTML = `
             <h2>Agregar Tipo de Ejercicio</h2>
             <form method="post" style="display:inline;">
                 {% csrf_token %}
@@ -215,23 +236,23 @@
 
         $(modal).modal("show");
         $(background).show();
-      }
+    }
 
-      function closeModal() {
+    function closeModal() {
         var modal = document.getElementById("universalModal");
         var background = document.getElementById("modalBackground");
 
         $(modal).modal("hide");
         $(background).hide();
-      }
-    </script>
-    <br>
-    <br>
-     <footer>
-        <div class="container-fluid">
-            <p>&copy; 2024 Clínica de Fisioterapia. Todos los derechos reservados.</p>
-            <p>Ubicación: Universidad Técnica de Ambato</p>
-        </div>
-    </footer>
-  </body>
+    }
+</script>
+<br>
+<br>
+<footer>
+    <div class="container-fluid">
+        <p>&copy; 2024 Clínica de Fisioterapia. Todos los derechos reservados.</p>
+        <p>Ubicación: Universidad Técnica de Ambato</p>
+    </div>
+</footer>
+</body>
 </html>

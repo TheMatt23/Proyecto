@@ -16,7 +16,7 @@
             background-size: cover;
         }
         .navbar {
-            background-color: #007BFF; /* Azul */
+            background-color: #4180ab; /* Azul oscuro */
         }
         .navbar-brand img {
             margin-top: 5px; /* Espacio superior para el logo */
@@ -37,8 +37,8 @@
             text-align: center;
         }
         footer {
-            background-color: #007bff;
-            color: #f2f2f2;
+            background-color: #4180ab; /* Azul oscuro */
+            color: white; /* Texto blanco */
             text-align: center;
             padding: 10px 0;
             position: fixed;
@@ -53,7 +53,7 @@
     <nav class="navbar navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="ruta/a/tu/imagen.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top me-2">
+                <img src="https://i.ibb.co/6WCZbKn/logo-png.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top me-2">
                 Fisioterapeuta
             </a>
         </div>
@@ -64,9 +64,10 @@
         <div class="graph-container">
             {{ plot_div|safe }}
         </div>
+        <button onclick="window.history.back()" class="btn btn-primary">Volver</button>
     </div>
 
-    <footer class="bg-primary text-white text-center py-3 mt-4">
+    <footer class=" text-white text-center py-3 mt-4">
         <p>&copy; 2024 Clínica de Fisioterapia. Todos los derechos reservados.</p>
         <p>Ubicación: Universidad Técnica de Ambato</p>
     </footer>
